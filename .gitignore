@@ -1,1 +1,7 @@
 Others
+.vscode
+.spyproject
+.ipynb_checkpoints
+__pycache__
+mcsim.py
+mit.py
