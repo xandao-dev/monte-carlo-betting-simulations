@@ -50,18 +50,15 @@ def fixed_system(
     bet_count_history_X = []
     bankroll_history_Y = []
     bet_size = bankroll*bet_percentage/100.0
-    currentWager = 1
-    
-    while currentWager <= wager_count:
+    for current_bet in range(1, bet_count+1):
         if gen_bet_result(win_rate):
-            bankroll += bet_size*payout/100.0
+            bankroll += bet_size*payout_rate/100.0
         else:
             bankroll -= bet_size
             if bankroll <= 0:
                 print('Broke')
                 break
-        bet_count_history_X.append(currentWager)
+        bet_count_history_X.append(current_bet)
         bankroll_history_Y.append(bankroll)
-        currentWager += 1
         
     return bet_count_history_X, bankroll_history_Y
