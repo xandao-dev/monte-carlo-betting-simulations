@@ -12,7 +12,10 @@ def fixed_system(
         payout_rate: float,
         bankroll: Union[int, float], 
         bet_count: int,
-        bet_percentage: float
+        bet_percentage: float,
+        minimum_bet_value: int,
+        stoploss: Union[int, None],
+        stopgain: Union[int, None]
 ) -> Tuple[int, Union[int, float]]:
     '''
     Parameters
@@ -49,10 +52,27 @@ def fixed_system(
     '''
  
     bust = False
+    stop_loss_reached = True
+    stop_gain_reached = False
+    
     bet_count_history_X = []
     bankroll_history_Y = []
     bet_size = bankroll*bet_percentage
     for current_bet in range(1, bet_count+1):
+        if bet_size < minimum_bet_value:
+            bust = True
+            break
+        
+        if stoploss is not None:
+            if bankroll <= stoploss:
+                stop_loss_reached = True
+                break
+        
+        if stopgain is not None:
+            if bankroll >= stopgain:
+                stop_gain_reached = True
+                break
+        
         if gen_bet_result(win_rate):
             bankroll += bet_size*payout_rate
         else:
@@ -60,6 +80,8 @@ def fixed_system(
             if bankroll <= 0:
                 bust = True
                 break
+            
         bet_count_history_X.append(current_bet)
         bankroll_history_Y.append(bankroll)
-    return bet_count_history_X, bankroll_history_Y, bust
+    return bet_count_history_X, bankroll_history_Y, \
+           bankroll, bust, stop_loss_reached, stop_gain_reached

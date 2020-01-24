@@ -51,6 +51,7 @@ def percentage_system(
         or not.
     '''
     bust = False
+    stop_loss_reached = False
     stop_gain_reached = False
     
     bet_count_history_X = []
@@ -69,7 +70,7 @@ def percentage_system(
         
         if stoploss is not None:
             if bankroll <= stoploss:
-                bust = True
+                stop_loss_reached = True
                 break
         
         if stopgain is not None:
@@ -85,4 +86,4 @@ def percentage_system(
         bet_count_history_X.append(current_bet)
         bankroll_history_Y.append(bankroll)
     return bet_count_history_X, bankroll_history_Y, \
-           bankroll, bust, stop_gain_reached
+           bankroll, bust, stop_loss_reached, stop_gain_reached

@@ -37,17 +37,20 @@ def main():
     bust_count2 = 0 
     fig, axs = plt.subplots(2)
     for _ in range(samples):        
-        '''btX, brY, bust1 = fixed_system(
+        btX, brY, bust1 = fixed_system(
             generate_random_bet_result, 
             win_rate, 
             payout_rate,
             bankroll, 
             bet_count,
-            bet_percentage
+            bet_percentage,
+            minimum_bet_value,
+            stoploss,
+            stopgain
         )
         axs[0].plot(btX, brY, linewidth = 0.3)
         if bust1:
-            bust_count1 += 1'''
+            bust_count1 += 1
             
         btX, brY, bankroll2, bust2,stop_gain_reached = percentage_system(
             generate_random_bet_result, 
