@@ -11,19 +11,20 @@ import matplotlib.pyplot as plt
 # FIXME Odds = 1/(win_rate/100.0) -> where I put the payout?
 
 # General Input
-samples = 20
-win_rate = 55 # win_rate: 0-100
-payout_rate = 80 # payout_rate: 0-100 generally, but you choose
-bankroll = 10000
-bet_count = 1000
+samples = 100
+win_rate = 0.5850 # win_rate: 0.0000-1.0000
+payout_rate = 0.7800 # payout_rate: 0.0000-2.0000 generally, but you choose
+bankroll = 1000
+bet_count = 10000
 
 # Fixed System Input
-bet_percentage = 2 # bet percentage 0-100
+bet_percentage = 0.0200 # bet percentage: 0.0000-1.0000
 
 
 def main():
+    bust_count = 0
     for _ in range(samples):        
-        btX, brY = fixed_system(
+        btX, brY, bust = fixed_system(
             generate_random_bet_result, 
             win_rate, 
             payout_rate,
@@ -31,20 +32,24 @@ def main():
             bet_count,
             bet_percentage
         )
+        
+        if bust:
+            bust_count += 1
+        
         #plt.subplot(1, 1)
-        plt.plot(btX, brY, linewidth = 0.6)
+        plt.plot(btX, brY, linewidth = 0.3)
         plt.ylabel('Bankroll')
         plt.xlabel('Bet Count')
         plt.axhline(bankroll, color = 'b', linewidth = 0.1)
         plt.axhline(0, color = 'r', linewidth = 2)
     plt.show()
+    print(f'{bust_count} broke of {samples} samples.')
 
-
-def generate_random_bet_result(win_rate: int) -> bool:
-    result = random.randint(1,100)
-    if result <= win_rate:  # (1-50 -> 50%)   ----- (1-60 -> 60%)
+def generate_random_bet_result(win_rate: float) -> bool:
+    result = round(random.uniform(0,1),4)
+    if result <= win_rate:
         return True
-    elif result > win_rate: # (51-100 -> 50%) ----- (61-100 -> 40%)
+    elif result > win_rate: 
         return False
     
     
