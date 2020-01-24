@@ -50,6 +50,9 @@ def percentage_system(
         Y axis which is the bankroll history. The third is whether it is bust 
         or not.
     '''
+    bust_count = 0
+    sl_reached_count = 0
+    sg_reached_count = 0
     bet_count_history_X = []
     bankroll_history_Y = []
     for _ in range(samples):
@@ -88,7 +91,12 @@ def percentage_system(
                 
             bet_count_history_X_temp.append(current_bet)
             bankroll_history_Y_temp.append(bankroll_temp)
+        
+        if bust:
+            bust_count += 1
+        
         bet_count_history_X.append(bet_count_history_X_temp.copy())
         bankroll_history_Y.append(bankroll_history_Y_temp.copy())
-        
+    
+    print(f'{bust_count} broken of {samples} samples in Percentage System!')
     return bet_count_history_X, bankroll_history_Y
