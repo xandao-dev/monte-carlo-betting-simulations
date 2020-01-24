@@ -1,5 +1,4 @@
 __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -51,8 +50,8 @@ def percentage_system(
         or not.
     '''
     bust = False
-    stop_loss_reached = False
-    stop_gain_reached = False
+    sl_reached = False
+    sg_reached = False
     
     bet_count_history_X = []
     bankroll_history_Y = []
@@ -70,12 +69,12 @@ def percentage_system(
         
         if stoploss is not None:
             if bankroll <= stoploss:
-                stop_loss_reached = True
+                sl_reached = True
                 break
         
         if stopgain is not None:
             if bankroll >= stopgain:
-                stop_gain_reached = True
+                sg_reached = True
                 break
             
         if gen_bet_result(win_rate):
@@ -86,4 +85,4 @@ def percentage_system(
         bet_count_history_X.append(current_bet)
         bankroll_history_Y.append(bankroll)
     return bet_count_history_X, bankroll_history_Y, \
-           bankroll, bust, stop_loss_reached, stop_gain_reached
+           bankroll, bust, sl_reached, sg_reached

@@ -1,5 +1,4 @@
 __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -7,6 +6,7 @@ from typing import Callable, Union, Tuple
 
 
 def fixed_system(
+        samples: int,
         gen_bet_result: Callable[[float], bool], 
         win_rate: float,
         payout_rate: float,
@@ -16,7 +16,7 @@ def fixed_system(
         minimum_bet_value: int,
         stoploss: Union[int, None],
         stopgain: Union[int, None]
-) -> Tuple[int, Union[int, float]]:
+):
     '''
     Parameters
     ----------
@@ -50,38 +50,43 @@ def fixed_system(
         Y axis which is the bankroll history. The third is whether it is bust 
         or not.
     '''
- 
-    bust = False
-    stop_loss_reached = True
-    stop_gain_reached = False
-    
     bet_count_history_X = []
     bankroll_history_Y = []
     bet_size = bankroll*bet_percentage
-    for current_bet in range(1, bet_count+1):
-        if bet_size < minimum_bet_value:
-            bust = True
-            break
-        
-        if stoploss is not None:
-            if bankroll <= stoploss:
-                stop_loss_reached = True
-                break
-        
-        if stopgain is not None:
-            if bankroll >= stopgain:
-                stop_gain_reached = True
-                break
-        
-        if gen_bet_result(win_rate):
-            bankroll += bet_size*payout_rate
-        else:
-            bankroll -= bet_size
-            if bankroll <= 0:
+    for _ in range(samples):
+        bust = False
+        sl_reached = True
+        sg_reached = False
+        bet_count_history_X_temp = []
+        bankroll_history_Y_temp = []
+        bankroll_temp = bankroll
+        for current_bet in range(1, bet_count+1):
+            
+            if bet_size < minimum_bet_value:
                 bust = True
                 break
             
-        bet_count_history_X.append(current_bet)
-        bankroll_history_Y.append(bankroll)
-    return bet_count_history_X, bankroll_history_Y, \
-           bankroll, bust, stop_loss_reached, stop_gain_reached
+            if stoploss is not None:
+                if bankroll_temp <= stoploss:
+                    sl_reached = True
+                    break
+            
+            if stopgain is not None:
+                if bankroll_temp >= stopgain:
+                    sg_reached = True
+                    break
+            
+            if gen_bet_result(win_rate):
+                bankroll_temp += bet_size*payout_rate
+            else:
+                bankroll_temp -= bet_size
+                if bankroll_temp <= 0:
+                    bust = True
+                    break
+                
+            bet_count_history_X_temp.append(current_bet)
+            bankroll_history_Y_temp.append(bankroll_temp)
+        bet_count_history_X.append(bet_count_history_X_temp.copy())
+        bankroll_history_Y.append(bankroll_history_Y_temp.copy())
+        
+    return bet_count_history_X, bankroll_history_Y
