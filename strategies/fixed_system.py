@@ -10,8 +10,8 @@ def fixed_system(
         gen_bet_result: Callable[[int], bool], 
         win_rate: int,  
         bankroll: Union[int, float], 
-        bet_percentage: int, 
-        wager_count: int
+        wager_count: int,
+        bet_percentage: int
 ) -> Tuple[int, Union[int, float]]:
     
     wager_count_history_X = []
