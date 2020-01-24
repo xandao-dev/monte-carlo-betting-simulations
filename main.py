@@ -16,7 +16,7 @@ samples = 100
 win_rate = 0.5000 # win_rate: 0.0000-1.0000
 payout_rate = 1.0000 # payout_rate: 0.0000-2.0000 generally, but you choose
 bankroll = 1000
-bet_count = 10000
+bet_count = 5000
 
 # Fixed System and Percentage System Input
 bet_percentage = 0.0100 # bet percentage: 0.0000-1.0000
@@ -45,17 +45,17 @@ def main():
         stopgain
     )
     
+    plt.figure()
     for x, y in zip(btX, brY):
-        plt.plot(x, y, linewidth = 0.8)
-        
+        plt.plot(x, y, linewidth = 0.6) 
     plt.title('Fixed System')
     plt.ylabel('Bankroll')
     plt.xlabel('Bet Count')
     plt.axhline(bankroll, color = 'b', linewidth = 0.5)
     plt.axhline(0, color = 'r', linewidth = 2)
-    plt.show()
-'''
-    btX, brY, bankroll2, bust2, sl_reached2, sg_reached2 = percentage_system(
+
+    btX, brY = percentage_system(
+        samples,
         generate_random_bet_result, 
         win_rate, 
         payout_rate,
@@ -66,14 +66,19 @@ def main():
         stoploss,
         stopgain
     )
-
+    
+    plt.figure()
+    for x, y in zip(btX, brY):
+        plt.plot(x, y, linewidth = 0.6)   
     plt.title('Percentage System')
     plt.ylabel('Bankroll')
     plt.xlabel('Bet Count')
     plt.axhline(bankroll, color = 'b', linewidth = 0.5)
     plt.axhline(0, color = 'r', linewidth = 2)
+    
     plt.show()
-'''
+
+
 def generate_random_bet_result(win_rate: float) -> bool:
     result = round(random.uniform(0,1),4)
     if result <= win_rate:
