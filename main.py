@@ -45,6 +45,7 @@ def main():
     plt.show()
     print(f'{bust_count} broke of {samples} samples.')
 
+
 def generate_random_bet_result(win_rate: float) -> bool:
     result = round(random.uniform(0,1),4)
     if result <= win_rate:

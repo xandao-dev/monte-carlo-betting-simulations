@@ -21,31 +21,33 @@ def fixed_system(
         A function that generate a random bet result, considering the win rate,
         and return True for win or False for lose.
     win_rate -> float
-        The win rate is a rate that can range from 0 to 100, which means the 
-        percentage you have of winning. 
+        The win rate is a rate that can range from 0.0000 to 1.0000, which 
+        means the percentage you have of winning. 
         To know your win rate you must divide the total bets you won by the 
         total bet, the more bets the more 
         accurate that rate will be.
     payout_rate -> float
-        The payout rate means how much you will win, for example an 80% payout
-        rate means that for every $ 1 wagered you will win $1 * 80% = 0.80c. 
+        The payout rate means how much you will win, for example a 0.80 payout
+        rate means that for every $ 1 wagered you will win $1 * 0.80 = 0.80c. 
         Here the payout rate varies from less infinite to more infinite, but 
-        this value generally ranges from 0 to 200.
+        this value generally ranges from 0.0000 to 2.0000.
     bankroll -> Union[int, float]
         The bankroll is the amount of money you have to bet.
     bet_count -> int
         The bet count is the amount of bets you will simulate.
     bet_percentage -> float
-        The bet percentage is the amount you will risk on each bet.
+        The bet percentage is the amount you will risk on each bet. This value
+        can range from 0.0000 to 1.0000.
 
     Returns
     -------
     Tuple[int, Union[int, float]]
-        This function returns a tuple containing two lists, the first is the 
-        X axis which is the amount of bets, the second is the Y axis which is 
-        the bankroll history.
-
+        This function returns a tuple containing two lists and a int. The 
+        first is the X axis which is the amount of bets. The second is the 
+        Y axis which is the bankroll history. The third is whether it is bust 
+        or not.
     '''
+ 
     bust = False
     bet_count_history_X = []
     bankroll_history_Y = []
