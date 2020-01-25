@@ -13,4 +13,6 @@
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/xandao6/monte-carlo-betting-simulations/blob/master
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/xandao6/monte-carlo-betting-simulations/blob/master/LICENSE)
+
+***If you like the project, support us by star***
