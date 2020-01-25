@@ -18,7 +18,7 @@ style.use('bmh')
 
 
 # General Input
-samples = 1
+samples = 5
 win_rate = 0.5000 # win rate: 0.0000-1.0000
 payout_rate = 1.0000 # payout rate: 0.0000-2.0000 generally, but you choose
 bankroll = 500
@@ -38,18 +38,18 @@ kelly_fraction = 1 # kelly fraction: 0.0000 to +inf, generally 1, 0.5 or 0.25
 
 
 if bankroll*bet_percentage <= minimum_bet_value:
-    bet_percentage = minimum_bet_value/100.0  
+    bet_percentage = minimum_bet_value/100.0
     print(f'Bet size is less than minimum bet value! Adjusting the bet ' +
           f'percentage to {bet_percentage}\n')
     
     
-def main():   
+def main():
     results = generate_random_bet_results(win_rate, bet_count, samples)
     
     betX, bkrY = fixed_system(
         results,
         payout_rate,
-        bankroll, 
+        bankroll,
         bet_percentage,
         stoploss,
         stopgain
@@ -57,21 +57,21 @@ def main():
     plot_config('Fixed System', betX, bkrY, samples, False)
 
     betX, bkrY = percentage_system(
-        results, 
+        results,
         payout_rate,
-        bankroll, 
+        bankroll,
         bet_percentage,
         minimum_bet_value,
         stoploss,
         stopgain
     )
-    plot_config('Percentage System', betX, bkrY, samples, False)
+    plot_config('Percentage System', betX, bkrY, samples, True)
 
     betX, bkrY = kelly_criterion(
         results,
         win_rate,
         payout_rate,
-        bankroll, 
+        bankroll,
         kelly_fraction,
         minimum_bet_value,
         stoploss,
@@ -79,12 +79,12 @@ def main():
     )
     if betX is not None and bkrY is not None:
         plot_config('Kelly Criterion', betX, bkrY, samples, False)
-    
+
     plt.show()
 
 
 def generate_random_bet_results(
-        win_rate: float, 
+        win_rate: float,
         bet_count: int,
         samples: int
 ) -> List[List[bool]]:
@@ -92,10 +92,10 @@ def generate_random_bet_results(
     Parameters
     ----------
     win_rate : float
-        The win rate is a rate that can range from 0.0000 to 1.0000, which 
-        means the percentage you have of winning. 
-        To know your win rate you must divide the total bets you won by the 
-        total bet, the more bets the more 
+        The win rate is a rate that can range from 0.0000 to 1.0000, which
+        means the percentage you have of winning.
+        To know your win rate you must divide the total bets you won by the
+        total bet, the more bets the more
         accurate that rate will be.
     bet_count : int
         The bet count is the amount of bets you will simulate.
@@ -105,8 +105,8 @@ def generate_random_bet_results(
     Returns
     -------
     List[List[bool]]
-        The results are a list of betting results, the innermost lists 
-        represent the amount of bets and the outermost lists represent 
+        The results are a list of betting results, the innermost lists
+        represent the amount of bets and the outermost lists represent
         the number of samples.
     '''
     results = []
@@ -116,15 +116,15 @@ def generate_random_bet_results(
             result = round(random.uniform(0,1),4)
             if result <= win_rate:
                 results_temp.append(True)
-            elif result > win_rate: 
+            elif result > win_rate:
                 results_temp.append(False)
         results.append(results_temp.copy())
     return results
     
     
 def plot_config(
-        title: str, 
-        bet_count_history_X: List[List[int]], 
+        title: str,
+        bet_count_history_X: List[List[int]],
         bankroll_history_Y: List[List[Union[int, float]]],
         samples: int,
         new_fig: bool = True
@@ -135,10 +135,10 @@ def plot_config(
     title : str
         The title of the graph.
     bet_count_history_X : List[List[int]]
-        bet_count_history_X is a list that contain the X axis lists which is 
+        bet_count_history_X is a list that contain the X axis lists which is
         the amount of bets.
     bankroll_history_Y : List[List[Union[int, float]]]
-        bankroll_history_Y is a list that contain the Y axis lists which is 
+        bankroll_history_Y is a list that contain the Y axis lists which is
         the bankroll history.
     samples : int
         The amount of samples that we will plot on the graph.
@@ -155,12 +155,13 @@ def plot_config(
             plt.plot(x, y, linewidth = 0.6)
         plt.title(title)
     elif not new_fig and samples <= 3:
+        #FIXME: Add colors and remove sample limiting!
         for x, y in zip(bet_count_history_X, bankroll_history_Y):
-            plt.plot(x, y, linewidth = 0.6, label=title)   
+            plt.plot(x, y, linewidth = 0.6, label=title)
         leg = plt.legend()
         for line in leg.get_lines():
             line.set_linewidth(4.0)
-    else: 
+    else:
         for x, y in zip(bet_count_history_X, bankroll_history_Y):
             plt.plot(x, y, linewidth = 0.6)
             

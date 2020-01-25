@@ -9,7 +9,7 @@ def kelly_criterion(
         results: List[List[bool]],
         win_rate: float,
         payout_rate: float,
-        bankroll: Union[int, float], 
+        bankroll: Union[int, float],
         kelly_fraction: float,
         minimum_bet_value: Union[int, float],
         stoploss: Union[int, None],
@@ -19,25 +19,25 @@ def kelly_criterion(
     Parameters
     ----------
     results -> List[List[bool]]
-        The results are a list of betting results, the innermost lists 
-        represent the amount of bets and the outermost lists represent 
+        The results are a list of betting results, the innermost lists
+        represent the amount of bets and the outermost lists represent
         the number of samples.
     win_rate : float
-        The win rate is a rate that can range from 0.0000 to 1.0000, which 
-        means the percentage you have of winning. 
-        To know your win rate you must divide the total bets you won by the 
-        total bet, the more bets the more 
+        The win rate is a rate that can range from 0.0000 to 1.0000, which
+        means the percentage you have of winning.
+        To know your win rate you must divide the total bets you won by the
+        total bet, the more bets the more
         accurate that rate will be.
     payout_rate -> float
         The payout rate means how much you will win, for example a 0.80 payout
-        rate means that for every $ 1 wagered you will win $1 * 0.80 = 0.80c. 
-        Here the payout rate varies from less infinite to more infinite, but 
+        rate means that for every $ 1 wagered you will win $1 * 0.80 = 0.80c.
+        Here the payout rate varies from less infinite to more infinite, but
         this value generally ranges from 0.0000 to 2.0000.
     bankroll -> Union[int, float]
         The bankroll is the amount of money you have to bet.
     kelly_fraction -> float
-        The fraction of kelly is a fraction of the percentage generated, 
-        changing it can cause overbet or underbet. It can range from 0.0000 
+        The fraction of kelly is a fraction of the percentage generated,
+        changing it can cause overbet or underbet. It can range from 0.0000
         to +infinite, but generally 1, 0.5 or 0.25.
     minimum_bet_value -> int
         The minimum bet amount is to avoid making miserably small bets.
@@ -49,8 +49,8 @@ def kelly_criterion(
     Returns
     -------
     Tuple[List[List[int]], List[List[Union[int, float]]]]
-        This function returns a tuple containing two lists. The 
-        first list contain the X axis lists which is the amount of bets. The 
+        This function returns a tuple containing two lists. The
+        first list contain the X axis lists which is the amount of bets. The
         second list is the Y axis lists which is the bankroll history.
     '''
     bust_count = 0
@@ -59,7 +59,7 @@ def kelly_criterion(
     bankroll_sum = 0
     bet_count_history_X = []
     bankroll_history_Y = []
-    
+
     samples = len(results) #It's equal to the number of samples of main.py
     kelly_percentage = win_rate - ((1-win_rate)/(payout_rate/1))
     if kelly_percentage <= 0:
@@ -67,7 +67,7 @@ def kelly_criterion(
         print('Negative Expectation. DO NOT operate!')
         return None, None
     bet_size = bankroll*kelly_percentage*kelly_fraction
-    
+
     for sample_results in results:
         bust = False
         sl_reached = False
@@ -75,8 +75,8 @@ def kelly_criterion(
         bet_count_history_X_temp = [0]
         bankroll_history_Y_temp = [bankroll]
         bankroll_temp = bankroll
-        
-        for current_bet, bet_result in enumerate(sample_results,1):              
+
+        for current_bet, bet_result in enumerate(sample_results,1):
             if stoploss is not None:
                 if bankroll_temp <= stoploss:
                     sl_reached = True
@@ -97,20 +97,20 @@ def kelly_criterion(
                 
             bet_count_history_X_temp.append(current_bet)
             bankroll_history_Y_temp.append(bankroll_temp)
-            
+
         if bust:
             bust_count += 1
         if sl_reached:
             sl_reached_count += 1
         if sg_reached:
             sg_reached_count += 1
-            
+
         bet_count_history_X.append(bet_count_history_X_temp.copy())
         bankroll_history_Y.append(bankroll_history_Y_temp.copy())
-        
+
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
-    
+
     print('*KELLY CRITERION*')
     print('Kelly criterion in percentage of capital: '+
           f'{round(kelly_percentage*100,2)}%')
