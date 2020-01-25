@@ -2,6 +2,11 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# FIXME: nao da para comparar as estrategias porque elas usam dados 
+# diferentes. Tambem é preciso adicionar o minimum bet value para o kelly crt.
+# ideia: passar a lista randomica pronta para as estrategias
+# ideia: poder comparar medias
+
 
 from strategies.fixed_system import fixed_system
 from strategies.percentage_system import percentage_system
@@ -102,9 +107,17 @@ def plot_config(
 ) -> None:
     if new_fig:
         plt.figure()
-    for x, y in zip(bet_count_history_X, bankroll_history_Y):
-        plt.plot(x, y, linewidth = 0.6)   
-    plt.title(title)
+        for x, y in zip(bet_count_history_X, bankroll_history_Y):
+            plt.plot(x, y, linewidth = 0.6)
+        plt.title(title)
+        
+    else:
+        for x, y in zip(bet_count_history_X, bankroll_history_Y):
+            plt.plot(x, y, linewidth = 0.6, label=title)   
+        leg = plt.legend()
+        for line in leg.get_lines():
+            line.set_linewidth(4.0)
+        
     plt.ylabel('Bankroll')
     plt.xlabel('Bet Count')
     plt.axhline(bankroll, color = 'b', linewidth = 0.5)

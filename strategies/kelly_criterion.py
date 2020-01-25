@@ -67,8 +67,6 @@ def kelly_criterion(
     if kelly_percentage <= 0:
         print('Negative Expectation. DO NOT operate!')
         return None, None
-    print('Kelly criterion in percentage of capital:'+
-          f'{round(kelly_percentage*100,2)}%')
     bet_size = bankroll*kelly_percentage*kelly_fraction
     
     for _ in range(samples):
@@ -115,6 +113,8 @@ def kelly_criterion(
     bankroll_average = bankroll_sum/samples
     
     print('*KELLY CRITERION*')
+    print('Kelly criterion in percentage of capital:'+
+          f'{round(kelly_percentage*100,2)}%')
     print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
     print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
     print(f' Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
