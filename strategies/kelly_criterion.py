@@ -13,6 +13,7 @@ def kelly_criterion(
         bankroll: Union[int, float], 
         bet_count: int,
         kelly_fraction: float,
+        minimum_bet_value: Union[int, float],
         stoploss: Union[int, None],
         stopgain: Union[int, None]
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
@@ -39,6 +40,10 @@ def kelly_criterion(
         The bankroll is the amount of money you have to bet.
     bet_count -> int
         The bet count is the amount of bets you will simulate.
+    kelly_fraction -> float
+        DESCRIPTION
+    minimum_bet_value -> int
+        DESCRIPTION
     stoploss -> Union[int, None]
         If the bankroll is less than the stop loss it stops.
     stopgain -> Union[int, None]
@@ -109,6 +114,7 @@ def kelly_criterion(
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
     
+    print('*KELLY CRITERION*')
     print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
     print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
     print(f' Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')

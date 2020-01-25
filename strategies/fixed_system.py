@@ -103,6 +103,7 @@ def fixed_system(
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
     
+    print('*FIXED SYSTEM*')
     print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
     print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
     print(f' Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')

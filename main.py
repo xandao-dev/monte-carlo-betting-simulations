@@ -16,19 +16,19 @@ style.use('bmh')
 
 
 # General Input
-samples = 2
+samples = 1
 win_rate = 0.5500 # win rate: 0.0000-1.0000
 payout_rate = 0.8500 # payout rate: 0.0000-2.0000 generally, but you choose
-bankroll = 100
+bankroll = 500
 bet_count = 10000
 stoploss = None
 stopgain = None
 
 # Fixed System and Percentage System Input
-bet_percentage = 0.0100 # bet percentage: 0.0000-1.0000
+bet_percentage = 0.0200 # bet percentage: 0.0000-1.0000
 
-# Percentage System Input
-#FIXME add to kelly criterium
+# Percentage System and Kelly Criterion Input
+#FIXME add to kelly criterion
 minimum_bet_value = 2
 
 # Kelly Criterion Input
@@ -42,7 +42,6 @@ if bankroll*bet_percentage <= minimum_bet_value:
     
     
 def main():   
-    '''
     betX, bkrY = fixed_system(
         samples,
         generate_random_bet_result, 
@@ -54,7 +53,7 @@ def main():
         stoploss,
         stopgain
     )
-    plot_config('Fixed System', betX, bkrY)
+    plot_config('Fixed System', betX, bkrY, False)
 
     betX, bkrY = percentage_system(
         samples,
@@ -68,8 +67,8 @@ def main():
         stoploss,
         stopgain
     )
-    plot_config('Percentage System', betX, bkrY)
-    '''
+    plot_config('Percentage System', betX, bkrY, False)
+
     betX, bkrY = kelly_criterion(
         samples,
         generate_random_bet_result, 
@@ -78,10 +77,11 @@ def main():
         bankroll, 
         bet_count,
         kelly_fraction,
+        minimum_bet_value,
         stoploss,
         stopgain
     )
-    plot_config('Percentage System', betX, bkrY)
+    plot_config('Percentage System', betX, bkrY, False)
     
     plt.show()
 

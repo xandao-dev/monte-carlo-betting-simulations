@@ -13,7 +13,7 @@ def percentage_system(
         bankroll: Union[int, float], 
         bet_count: int,
         bet_percentage: float,
-        minimum_bet_value: int,
+        minimum_bet_value: Union[int, float],
         stoploss: Union[int, None],
         stopgain: Union[int, None]
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
@@ -43,7 +43,7 @@ def percentage_system(
     bet_percentage -> float
         The bet percentage is the amount you will risk on each bet. This value
         can range from 0.0000 to 1.0000.
-    minimum_bet_value -> int
+    minimum_bet_value -> Union[int, float]
         The minimum amount to be wagered, if the amount of the bet is less it 
         will be scaled down to the minimum amount.
     stoploss -> Union[int, None]
@@ -112,6 +112,8 @@ def percentage_system(
         
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
+    
+    print('*PERCENTAGE SYSTEM*')
     print(f'{bust_count} broken of {samples} samples in Perc. Sys.!')
     print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
     print(f' Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
