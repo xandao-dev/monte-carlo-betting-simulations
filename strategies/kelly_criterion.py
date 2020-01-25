@@ -94,7 +94,7 @@ def kelly_criterion(
                 if bankroll_temp <= 0:
                     bust = True
                     break
-                
+
             bet_count_history_X_temp.append(current_bet)
             bankroll_history_Y_temp.append(bankroll_temp)
 

@@ -117,8 +117,8 @@ def generate_random_bet_results(
                 results_temp.append(False)
         results.append(results_temp.copy())
     return results
-    
-    
+
+
 def plot_config(
         title: str,
         bet_count_history_X: List[List[int]],

@@ -69,7 +69,7 @@ def fixed_system(
                 if bankroll_temp >= stopgain:
                     sg_reached = True
                     break
-                
+
             if bet_result:
                 bankroll_temp += bet_size*payout_rate
             else:
