@@ -2,7 +2,7 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 # -*- coding: utf-8 -*-
 
 
-from typing import Callable, Union, Tuple
+from typing import Callable, Union, Tuple, List
 
 
 def percentage_system(

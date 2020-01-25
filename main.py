@@ -9,6 +9,7 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 
 from strategies.fixed_system import fixed_system
 from strategies.percentage_system import percentage_system
+from typing import Union, List
 import random
 import matplotlib.pyplot as plt
 import matplotlib.style as style
@@ -42,7 +43,7 @@ if bankroll*bet_percentage <= minimum_bet_value:
     
     
 def main():   
-    btX, brY = fixed_system(
+    betX, bkrY = fixed_system(
         samples,
         generate_random_bet_result, 
         win_rate, 
@@ -53,17 +54,9 @@ def main():
         stoploss,
         stopgain
     )
-    
-    plt.figure()
-    for x, y in zip(btX, brY):
-        plt.plot(x, y, linewidth = 0.6) 
-    plt.title('Fixed System')
-    plt.ylabel('Bankroll')
-    plt.xlabel('Bet Count')
-    plt.axhline(bankroll, color = 'b', linewidth = 0.5)
-    plt.axhline(0, color = 'r', linewidth = 2)
+    plot_config('Fixed System', betX, bkrY)
 
-    btX, brY = percentage_system(
+    betX, bkrY = percentage_system(
         samples,
         generate_random_bet_result, 
         win_rate, 
@@ -75,15 +68,7 @@ def main():
         stoploss,
         stopgain
     )
-    
-    plt.figure()
-    for x, y in zip(btX, brY):
-        plt.plot(x, y, linewidth = 0.6)   
-    plt.title('Percentage System')
-    plt.ylabel('Bankroll')
-    plt.xlabel('Bet Count')
-    plt.axhline(bankroll, color = 'b', linewidth = 0.5)
-    plt.axhline(0, color = 'r', linewidth = 2)
+    plot_config('Percentage System', betX, bkrY)
     
     plt.show()
 
@@ -96,5 +81,20 @@ def generate_random_bet_result(win_rate: float) -> bool:
         return False
     
     
+def plot_config(
+        title: str, 
+        bet_count_history_X: List[List[int]], 
+        bankroll_history_Y: List[List[Union[int, float]]]
+) -> None:
+    plt.figure()
+    for x, y in zip(bet_count_history_X, bankroll_history_Y):
+        plt.plot(x, y, linewidth = 0.6)   
+    plt.title(title)
+    plt.ylabel('Bankroll')
+    plt.xlabel('Bet Count')
+    plt.axhline(bankroll, color = 'b', linewidth = 0.5)
+    plt.axhline(0, color = 'r', linewidth = 2)
+
+
 if __name__ == '__main__':
     main()
