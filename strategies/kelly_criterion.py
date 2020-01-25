@@ -63,6 +63,7 @@ def kelly_criterion(
     samples = len(results) #It's equal to the number of samples of main.py
     kelly_percentage = win_rate - ((1-win_rate)/(payout_rate/1))
     if kelly_percentage <= 0:
+        print('*KELLY CRITERION*')
         print('Negative Expectation. DO NOT operate!')
         return None, None
     bet_size = bankroll*kelly_percentage*kelly_fraction

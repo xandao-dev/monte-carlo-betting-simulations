@@ -22,7 +22,7 @@ samples = 1
 win_rate = 0.5000 # win rate: 0.0000-1.0000
 payout_rate = 1.0000 # payout rate: 0.0000-2.0000 generally, but you choose
 bankroll = 500
-bet_count = 10000
+bet_count = 1000
 stoploss = None
 stopgain = None
 
