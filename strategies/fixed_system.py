@@ -64,7 +64,7 @@ def fixed_system(
                 if bankroll_temp <= stoploss:
                     sl_reached = True
                     break
-            
+
             if stopgain is not None:
                 if bankroll_temp >= stopgain:
                     sg_reached = True

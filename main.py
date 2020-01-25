@@ -45,7 +45,7 @@ if bankroll*bet_percentage <= minimum_bet_value:
 
 def main():
     results = generate_random_bet_results(win_rate, bet_count, samples)
-    
+
     betX, bkrY = fixed_system(
         results,
         payout_rate,
