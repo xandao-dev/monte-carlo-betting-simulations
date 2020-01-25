@@ -19,8 +19,8 @@ style.use('bmh')
 
 # General Input
 samples = 1
-win_rate = 0.5500 # win rate: 0.0000-1.0000
-payout_rate = 0.8800 # payout rate: 0.0000-2.0000 generally, but you choose
+win_rate = 0.5000 # win rate: 0.0000-1.0000
+payout_rate = 1.0000 # payout rate: 0.0000-2.0000 generally, but you choose
 bankroll = 500
 bet_count = 10000
 stoploss = None
@@ -77,7 +77,8 @@ def main():
         stoploss,
         stopgain
     )
-    plot_config('Kelly Criterion', betX, bkrY, samples, False)
+    if betX is not None and bkrY is not None:
+        plot_config('Kelly Criterion', betX, bkrY, samples, False)
     
     plt.show()
 
