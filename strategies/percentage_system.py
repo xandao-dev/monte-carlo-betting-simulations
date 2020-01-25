@@ -2,16 +2,13 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 # -*- coding: utf-8 -*-
 
 
-from typing import Callable, Union, Tuple, List
+from typing import Union, Tuple, List
 
 
 def percentage_system(
-        samples: int,
-        gen_bet_result: Callable[[float], bool], 
-        win_rate: float,
+        results: List[List[bool]], 
         payout_rate: float,
         bankroll: Union[int, float], 
-        bet_count: int,
         bet_percentage: float,
         minimum_bet_value: Union[int, float],
         stoploss: Union[int, None],
@@ -20,17 +17,10 @@ def percentage_system(
     '''
     Parameters
     ----------
-    samples -> int
-        The amount of samples that we will plot on the graph.
-    gen_bet_result -> Callable[[float], bool]
-        A function that generate a random bet result, considering the win rate,
-        and return True for win or False for lose.
-    win_rate -> float
-        The win rate is a rate that can range from 0.0000 to 1.0000, which 
-        means the percentage you have of winning. 
-        To know your win rate you must divide the total bets you won by the 
-        total bet, the more bets the more 
-        accurate that rate will be.
+    results -> List[List[bool]]
+        The results are a list of betting results, the innermost lists 
+        represent the amount of bets and the outermost lists represent 
+        the number of samples.
     payout_rate -> float
         The payout rate means how much you will win, for example a 0.80 payout
         rate means that for every $ 1 wagered you will win $1 * 0.80 = 0.80c. 
@@ -38,8 +28,6 @@ def percentage_system(
         this value generally ranges from 0.0000 to 2.0000.
     bankroll -> Union[int, float]
         The bankroll is the amount of money you have to bet.
-    bet_count -> int
-        The bet count is the amount of bets you will simulate.
     bet_percentage -> float
         The bet percentage is the amount you will risk on each bet. This value
         can range from 0.0000 to 1.0000.
@@ -64,14 +52,17 @@ def percentage_system(
     bankroll_sum = 0
     bet_count_history_X = []
     bankroll_history_Y = []
-    for _ in range(samples):
+    
+    samples = len(results) #It's equal to the number of samples of main.py
+    
+    for sample_results in results:
         bust = False
         sl_reached = False
         sg_reached = False
         bet_count_history_X_temp = [0]
         bankroll_history_Y_temp = [bankroll]
         bankroll_temp = bankroll
-        for current_bet in range(1, bet_count+1):
+        for current_bet, bet_result in enumerate(sample_results,1):  
             bet_size = bankroll_temp*bet_percentage
             
             if bet_size < minimum_bet_value:
@@ -92,7 +83,7 @@ def percentage_system(
                     sg_reached = True
                     break
                 
-            if gen_bet_result(win_rate):
+            if bet_result:
                 bankroll_temp += bet_size*payout_rate
             else:
                 bankroll_temp -= bet_size

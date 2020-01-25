@@ -2,16 +2,14 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 # -*- coding: utf-8 -*-
 
 
-from typing import Callable, Union, Tuple, List
+from typing import Union, Tuple, List
 
 
 def kelly_criterion(
-        samples: int,
-        gen_bet_result: Callable[[float], bool], 
+        results: List[List[bool]],
         win_rate: float,
         payout_rate: float,
         bankroll: Union[int, float], 
-        bet_count: int,
         kelly_fraction: float,
         minimum_bet_value: Union[int, float],
         stoploss: Union[int, None],
@@ -20,12 +18,11 @@ def kelly_criterion(
     '''
     Parameters
     ----------
-    samples -> int
-        The amount of samples that we will plot on the graph.
-    gen_bet_result -> Callable[[float], bool]
-        A function that generate a random bet result, considering the win rate,
-        and return True for win or False for lose.
-    win_rate -> float
+    results -> List[List[bool]]
+        The results are a list of betting results, the innermost lists 
+        represent the amount of bets and the outermost lists represent 
+        the number of samples.
+    win_rate : float
         The win rate is a rate that can range from 0.0000 to 1.0000, which 
         means the percentage you have of winning. 
         To know your win rate you must divide the total bets you won by the 
@@ -38,12 +35,12 @@ def kelly_criterion(
         this value generally ranges from 0.0000 to 2.0000.
     bankroll -> Union[int, float]
         The bankroll is the amount of money you have to bet.
-    bet_count -> int
-        The bet count is the amount of bets you will simulate.
     kelly_fraction -> float
-        DESCRIPTION
+        The fraction of kelly is a fraction of the percentage generated, 
+        changing it can cause overbet or underbet. It can range from 0.0000 
+        to +infinite, but generally 1, 0.5 or 0.25.
     minimum_bet_value -> int
-        DESCRIPTION
+        The minimum bet amount is to avoid making miserably small bets.
     stoploss -> Union[int, None]
         If the bankroll is less than the stop loss it stops.
     stopgain -> Union[int, None]
@@ -63,13 +60,14 @@ def kelly_criterion(
     bet_count_history_X = []
     bankroll_history_Y = []
     
+    samples = len(results) #It's equal to the number of samples of main.py
     kelly_percentage = win_rate - ((1-win_rate)/(payout_rate/1))
     if kelly_percentage <= 0:
         print('Negative Expectation. DO NOT operate!')
         return None, None
     bet_size = bankroll*kelly_percentage*kelly_fraction
     
-    for _ in range(samples):
+    for sample_results in results:
         bust = False
         sl_reached = False
         sg_reached = False
@@ -77,7 +75,7 @@ def kelly_criterion(
         bankroll_history_Y_temp = [bankroll]
         bankroll_temp = bankroll
         
-        for current_bet in range(1, bet_count+1):            
+        for current_bet, bet_result in enumerate(sample_results,1):              
             if stoploss is not None:
                 if bankroll_temp <= stoploss:
                     sl_reached = True
@@ -88,7 +86,7 @@ def kelly_criterion(
                     sg_reached = True
                     break
             
-            if gen_bet_result(win_rate):
+            if bet_result:
                 bankroll_temp += bet_size*payout_rate
             else:
                 bankroll_temp -= bet_size
@@ -113,7 +111,7 @@ def kelly_criterion(
     bankroll_average = bankroll_sum/samples
     
     print('*KELLY CRITERION*')
-    print('Kelly criterion in percentage of capital:'+
+    print('Kelly criterion in percentage of capital: '+
           f'{round(kelly_percentage*100,2)}%')
     print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
     print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
