@@ -93,12 +93,12 @@ def fixed_system(
 
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
-    
+
     print('*FIXED SYSTEM*')
+    print(f'Final bankroll average: {round(bankroll_average,2)}')
+    print(f'Death rate: {round((bust_count/samples)*100,2)}%, '
+          f'Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
     print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
-    print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
-    print(f' Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
     print(f'{sl_reached_count} stoploss reached of {samples} in Fixed Sys.!')
-    print(f'{sg_reached_count} stopgain reached of {samples} in Fixed Sys.!')
-    print(f'Final bankroll average: {round(bankroll_average,2)}\n')
+    print(f'{sg_reached_count} stopgain reached of {samples} in Fixed Sys.!\n')
     return bet_count_history_X, bankroll_history_Y

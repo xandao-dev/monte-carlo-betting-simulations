@@ -62,7 +62,7 @@ def percentage_system(
         bet_count_history_X_temp = [0]
         bankroll_history_Y_temp = [bankroll]
         bankroll_temp = bankroll
-        for current_bet, bet_result in enumerate(sample_results,1):  
+        for current_bet, bet_result in enumerate(sample_results,1):
             bet_size = bankroll_temp*bet_percentage
 
             if bet_size < minimum_bet_value:
@@ -105,10 +105,10 @@ def percentage_system(
     bankroll_average = bankroll_sum/samples
 
     print('*PERCENTAGE SYSTEM*')
+    print(f'Final bankroll average: {round(bankroll_average,2)}')
+    print(f'Death rate: {round((bust_count/samples)*100,2)}%, '
+          f'Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
     print(f'{bust_count} broken of {samples} samples in Perc. Sys.!')
-    print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
-    print(f' Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
     print(f'{sl_reached_count} stoploss reached of {samples} in Perc. Sys.!')
-    print(f'{sg_reached_count} stopgain reached of {samples} in Perc. Sys.!')
-    print(f'Final bankroll average: {round(bankroll_average,2)}\n')
+    print(f'{sg_reached_count} stopgain reached of {samples} in Perc. Sys.!\n')
     return bet_count_history_X, bankroll_history_Y

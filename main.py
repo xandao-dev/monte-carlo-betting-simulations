@@ -21,13 +21,13 @@ style.use('bmh')
 samples = 5
 win_rate = 0.5000 # win rate: 0.0000-1.0000
 payout_rate = 1.0000 # payout rate: 0.0000-2.0000 generally, but you choose
-bankroll = 500
+bankroll = 100
 bet_count = 1000
 stoploss = None
 stopgain = None
 
 # Fixed System and Percentage System Input
-bet_percentage = 0.0200 # bet percentage: 0.0000-1.0000
+bet_percentage = 0.0100 # bet percentage: 0.0000-1.0000
 
 # Percentage System and Kelly Criterion Input
 #FIXME add to kelly criterion
@@ -39,10 +39,10 @@ kelly_fraction = 1 # kelly fraction: 0.0000 to +inf, generally 1, 0.5 or 0.25
 
 if bankroll*bet_percentage <= minimum_bet_value:
     bet_percentage = minimum_bet_value/100.0
-    print(f'Bet size is less than minimum bet value! Adjusting the bet ' +
+    print('Bet size is less than minimum bet value! Adjusting the bet '
           f'percentage to {bet_percentage}\n')
-    
-    
+
+
 def main():
     results = generate_random_bet_results(win_rate, bet_count, samples)
     
@@ -52,8 +52,7 @@ def main():
         bankroll,
         bet_percentage,
         stoploss,
-        stopgain
-    )
+        stopgain)
     plot_config('Fixed System', betX, bkrY, samples, False)
 
     betX, bkrY = percentage_system(
@@ -63,8 +62,7 @@ def main():
         bet_percentage,
         minimum_bet_value,
         stoploss,
-        stopgain
-    )
+        stopgain)
     plot_config('Percentage System', betX, bkrY, samples, True)
 
     betX, bkrY = kelly_criterion(
@@ -75,8 +73,7 @@ def main():
         kelly_fraction,
         minimum_bet_value,
         stoploss,
-        stopgain
-    )
+        stopgain)
     if betX is not None and bkrY is not None:
         plot_config('Kelly Criterion', betX, bkrY, samples, False)
 
@@ -164,7 +161,7 @@ def plot_config(
     else:
         for x, y in zip(bet_count_history_X, bankroll_history_Y):
             plt.plot(x, y, linewidth = 0.6)
-            
+
     plt.ylabel('Bankroll')
     plt.xlabel('Bet Count')
     plt.axhline(bankroll, color = 'b', linewidth = 0.5)
