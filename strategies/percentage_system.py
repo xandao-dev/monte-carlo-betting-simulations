@@ -16,10 +16,12 @@ def percentage_system(
         minimum_bet_value: int,
         stoploss: Union[int, None],
         stopgain: Union[int, None]
-) -> Tuple[int, Union[int, float]]:
+) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
     '''
     Parameters
     ----------
+    samples -> int
+        The amount of samples that we will plot on the graph.
     gen_bet_result -> Callable[[float], bool]
         A function that generate a random bet result, considering the win rate,
         and return True for win or False for lose.
@@ -41,33 +43,39 @@ def percentage_system(
     bet_percentage -> float
         The bet percentage is the amount you will risk on each bet. This value
         can range from 0.0000 to 1.0000.
+    minimum_bet_value -> int
+        The minimum amount to be wagered, if the amount of the bet is less it 
+        will be scaled down to the minimum amount.
+    stoploss -> Union[int, None]
+        If the bankroll is less than the stop loss it stops.
+    stopgain -> Union[int, None]
+        If the bankroll is bigger than the stop gain it stops.
 
     Returns
     -------
-    Tuple[int, Union[int, float]]
-        This function returns a tuple containing two lists and a int. The 
-        first is the X axis which is the amount of bets. The second is the 
-        Y axis which is the bankroll history. The third is whether it is bust 
-        or not.
+    Tuple[List[List[int]], List[List[Union[int, float]]]]
+        This function returns a tuple containing two lists. The 
+        first list contain the X axis lists which is the amount of bets. The 
+        second list is the Y axis lists which is the bankroll history.
     '''
     bust_count = 0
     sl_reached_count = 0
     sg_reached_count = 0
+    bankroll_sum = 0
     bet_count_history_X = []
     bankroll_history_Y = []
     for _ in range(samples):
         bust = False
-        sl_reached = True
+        sl_reached = False
         sg_reached = False
-        bet_count_history_X_temp = []
-        bankroll_history_Y_temp = []
+        bet_count_history_X_temp = [0]
+        bankroll_history_Y_temp = [bankroll]
         bankroll_temp = bankroll
         for current_bet in range(1, bet_count+1):
             bet_size = bankroll_temp*bet_percentage
             
             if bet_size < minimum_bet_value:
-                bust = True
-                break
+                bet_size = minimum_bet_value
     
             # bankroll <= 1 because it will never bust if we dont use this.
             if bankroll_temp <= 1:
@@ -94,9 +102,20 @@ def percentage_system(
         
         if bust:
             bust_count += 1
-        
+        if sl_reached:
+            sl_reached_count += 1
+        if sg_reached:
+            sg_reached_count += 1
+            
         bet_count_history_X.append(bet_count_history_X_temp.copy())
         bankroll_history_Y.append(bankroll_history_Y_temp.copy())
-    
-    print(f'{bust_count} broken of {samples} samples in Percentage System!')
+        
+        bankroll_sum += bankroll_history_Y_temp[-1]
+    bankroll_average = bankroll_sum/samples
+    print(f'{bust_count} broken of {samples} samples in Perc. Sys.!')
+    print(f'Death rate: {round((bust_count/samples)*100,2)}%,', end = '')
+    print(f' Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
+    print(f'{sl_reached_count} stoploss reached of {samples} in Perc. Sys.!')
+    print(f'{sg_reached_count} stopgain reached of {samples} in Perc. Sys.!')
+    print(f'Final bankroll average: {round(bankroll_average,2)}\n')
     return bet_count_history_X, bankroll_history_Y
