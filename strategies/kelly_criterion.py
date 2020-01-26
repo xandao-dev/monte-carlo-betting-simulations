@@ -12,6 +12,7 @@ def kelly_criterion(
         bankroll: Union[int, float],
         kelly_fraction: float,
         minimum_bet_value: Union[int, float],
+        maximum_bet_value: Union[int, float, None],
         stoploss: Union[int, None],
         stopgain: Union[int, None]
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
@@ -40,12 +41,19 @@ def kelly_criterion(
         changing it can cause overbet or underbet. It can range from 0.0000
         to +infinite, but generally 1, 0.5 or 0.25.
     minimum_bet_value -> Union[int, float]
-        The minimum bet amount is to avoid making miserably small bets. If the
-        amount of the bet is less it will not play.
+        The minimum amount to be wagered, if the amount of the bet is less it
+        will be scaled down to the minimum amount until it can be changed.
+        Put None to disable.
+    maximum_bet_value -> Union[int, float, None]
+        The maximum bet value is to avoid making non real big bets. If the
+        amount of the bet is bigger than the maximum bet value, it will be 
+        scaled to maximum amount until it can be changed. Put None to disable.
     stoploss -> Union[int, None]
         If the bankroll is less than the stop loss it stops.
+        Put None to disable.
     stopgain -> Union[int, None]
         If the bankroll is bigger than the stop gain it stops.
+        Put None to disable.
 
     Returns
     -------
@@ -69,12 +77,6 @@ def kelly_criterion(
     if kelly_percentage <= 0:
         print('Negative Expectation. DO NOT operate!')
         return [[],[]]
-    bet_value = bankroll*kelly_percentage*kelly_fraction
-    if bet_value < minimum_bet_value:
-        print('The bet size is smaller than the minimum bet value. '
-              'It will not operate!')
-        return [[],[]]
-    
     for sample_results in results:
         bust = False
         sl_reached = False
@@ -84,8 +86,18 @@ def kelly_criterion(
         bankroll_temp = bankroll
 
         for current_bet, bet_result in enumerate(sample_results,1):
+            bet_value = bankroll_temp*kelly_percentage*kelly_fraction
+            
+            #temporary bet limiting, to minimum or maximum
+            if minimum_bet_value is not None: 
+                if bet_value < minimum_bet_value:
+                    bet_value = minimum_bet_value
+            if maximum_bet_value is not None:
+                if bet_value > maximum_bet_value:
+                    bet_value = maximum_bet_value
+            
             # bankroll_temp <= 1 because it will never bust if we dont use this.
-            if bankroll_temp <= 1 or bankroll_temp < minimum_bet_value:
+            if bankroll_temp <= 1 :
                 bust = True
                 break
             

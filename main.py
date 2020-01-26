@@ -3,6 +3,7 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 # -*- coding: utf-8 -*-
 
 # FIXME Ideia: poder comparar medias
+# FIXME Ideia: ver bankroll maximo
 
 from strategies.fixed_system import fixed_system
 from strategies.percentage_system import percentage_system
@@ -77,6 +78,7 @@ def main():
         bankroll,
         kelly_fraction,
         minimum_bet_value,
+        maximum_bet_value,
         stoploss,
         stopgain)
     plot_config('Kelly Criterion', betX, bkrY, samples, True)

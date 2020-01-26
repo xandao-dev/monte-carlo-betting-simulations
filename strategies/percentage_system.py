@@ -42,8 +42,10 @@ def percentage_system(
         scaled to maximum amount until it can be changed. Put None to disable.
     stoploss -> Union[int, None]
         If the bankroll is less than the stop loss it stops.
+        Put None to disable.
     stopgain -> Union[int, None]
         If the bankroll is bigger than the stop gain it stops.
+        Put None to disable.
 
     Returns
     -------
