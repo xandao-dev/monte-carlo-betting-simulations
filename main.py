@@ -3,7 +3,6 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 # -*- coding: utf-8 -*-
 
 # FIXME Ideia: poder comparar medias
-# FIXME Ideia: maximum_bet_value
 
 from strategies.fixed_system import fixed_system
 from strategies.percentage_system import percentage_system
@@ -18,12 +17,12 @@ style.use('bmh')
 
 
 # General Input
-samples = 1
-win_rate = 0.5600 # win rate: 0.0000-1.0000
-payout_rate = 0.8700 # payout rate: 0.0000-2.0000 generally, but you choose
+samples = 100
+win_rate = 0.5500 # win rate: 0.0000-1.0000
+payout_rate = 0.8500 # payout rate: 0.0000-2.0000 generally, but you choose
 bankroll = 1000
-minimum_bet_value = 2
-maximum_bet_value = 20000
+minimum_bet_value = None
+maximum_bet_value = None
 bet_count = 10000
 stoploss = None
 stopgain = None
@@ -32,19 +31,19 @@ stopgain = None
 bet_value = 10
 
 #Percentage System Input
-bet_percentage = 0.0200 # bet percentage: 0.0000-1.0000
+bet_percentage = 0.0100 # bet percentage: 0.0000-1.0000
 
 
 
 # Kelly Criterion Input
 kelly_fraction = 1 # kelly fraction: 0.0000 to +inf, generally 1, 0.5 or 0.25
 
-
+'''
 if bankroll*bet_percentage <= minimum_bet_value:
     bet_percentage = minimum_bet_value/100.0
     print('Bet size is less than minimum bet value! Adjusting the bet '
           f'percentage to {round(bet_percentage*100,4)}%\n')
-
+'''
 
 def main():
     results = generate_random_bet_results(win_rate, bet_count, samples)
@@ -58,7 +57,7 @@ def main():
         maximum_bet_value,
         stoploss,
         stopgain)
-    plot_config('Fixed System', betX, bkrY, samples, False)
+    plot_config('Fixed System', betX, bkrY, samples, True)
 
     betX, bkrY = percentage_system(
         results,
@@ -66,9 +65,10 @@ def main():
         bankroll,
         bet_percentage,
         minimum_bet_value,
+        maximum_bet_value,
         stoploss,
         stopgain)
-    plot_config('Percentage System', betX, bkrY, samples, False)
+    plot_config('Percentage System', betX, bkrY, samples, True)
 
     betX, bkrY = kelly_criterion(
         results,
@@ -79,8 +79,7 @@ def main():
         minimum_bet_value,
         stoploss,
         stopgain)
-
-    plot_config('Kelly Criterion', betX, bkrY, samples, False)
+    plot_config('Kelly Criterion', betX, bkrY, samples, True)
 
     plt.show()
 

@@ -10,7 +10,7 @@ def fixed_system(
         payout_rate: float,
         bankroll: Union[int, float],
         bet_value: Union[int,float],
-        minimum_bet_value: Union[int, float],
+        minimum_bet_value: Union[int, float, None],
         maximum_bet_value: Union[int, float, None],
         stoploss: Union[int, None],
         stopgain: Union[int, None]
@@ -31,14 +31,14 @@ def fixed_system(
         The bankroll is the amount of money you have to bet.
     bet_value -> Union[int,float]
         The size of the bet, which in this system is fixed.
-    minimum_bet_value -> Union[int, float]
+    minimum_bet_value -> Union[int, float, None]
         The minimum bet value is to avoid making miserably small bets. If the
         amount of the bet is less than minimum bet value it will be scaled 
-        down to the minimum amount.
+        down to the minimum amount. Put None to disable.
     maximum_bet_value -> Union[int, float, None]
         The maximum bet value is to avoid making non real big bets. If the
         amount of the bet is bigger than the maximum bet value, it will be 
-        scaled to maximum amount.
+        scaled to maximum amount. Put None to disable.
     stoploss -> Union[int, None]
         If the bankroll is less than the stop loss it stops.
     stopgain -> Union[int, None]
@@ -62,14 +62,16 @@ def fixed_system(
     bankroll_history_Y = []
 
     samples = len(results) #It's equal to the number of samples of main.py
-    if bet_value < minimum_bet_value:
-        print('The bet size is smaller than the minimum bet value. Bet size '
-              'will be adjusted to minimum, which is {minimum_bet_value}.\n')
-        bet_value = minimum_bet_value
-    elif bet_value > maximum_bet_value:
-        print('The bet size is bigger than the maximum bet value. Bet size '
-              'will be adjusted to maximum, which is {maximum_bet_value}.\n')
-        bet_value = maximum_bet_value
+    if minimum_bet_value is not None:
+        if bet_value < minimum_bet_value:
+            print('The bet size is smaller than the minimum bet value. Bet size '
+                  'will be adjusted to minimum, which is {minimum_bet_value}.\n')
+            bet_value = minimum_bet_value
+    if maximum_bet_value is not None:
+        if bet_value > maximum_bet_value:
+            print('The bet size is bigger than the maximum bet value. Bet size '
+                  'will be adjusted to maximum, which is {maximum_bet_value}.\n')
+            bet_value = maximum_bet_value
         
     for sample_results in results:
         bust = False
@@ -83,7 +85,6 @@ def fixed_system(
                 if bankroll_temp <= stoploss:
                     sl_reached = True
                     break
-
             if stopgain is not None:
                 if bankroll_temp >= stopgain:
                     sg_reached = True
