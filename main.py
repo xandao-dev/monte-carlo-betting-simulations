@@ -3,7 +3,7 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 # -*- coding: utf-8 -*-
 
 # FIXME Ideia: poder comparar medias
-
+# FIXME Ideia: maximum_bet_value
 
 from strategies.fixed_system import fixed_system
 from strategies.percentage_system import percentage_system
@@ -18,20 +18,23 @@ style.use('bmh')
 
 
 # General Input
-samples = 5
+samples = 1
 win_rate = 0.5600 # win rate: 0.0000-1.0000
 payout_rate = 0.8700 # payout rate: 0.0000-2.0000 generally, but you choose
 bankroll = 1000
+minimum_bet_value = 2
+maximum_bet_value = 20000
 bet_count = 10000
 stoploss = None
 stopgain = None
 
-# Fixed System and Percentage System Input
+#Fixed System Input
+bet_value = 10
+
+#Percentage System Input
 bet_percentage = 0.0200 # bet percentage: 0.0000-1.0000
 
-#Fixed System and Percentage System and Kelly Criterion Input
-#FIXME add to kelly criterion
-minimum_bet_value = 2
+
 
 # Kelly Criterion Input
 kelly_fraction = 1 # kelly fraction: 0.0000 to +inf, generally 1, 0.5 or 0.25
@@ -50,7 +53,9 @@ def main():
         results,
         payout_rate,
         bankroll,
-        bet_percentage,
+        bet_value,
+        minimum_bet_value,
+        maximum_bet_value,
         stoploss,
         stopgain)
     plot_config('Fixed System', betX, bkrY, samples, False)
@@ -74,8 +79,8 @@ def main():
         minimum_bet_value,
         stoploss,
         stopgain)
-    if betX is not None and bkrY is not None:
-        plot_config('Kelly Criterion', betX, bkrY, samples, False)
+
+    plot_config('Kelly Criterion', betX, bkrY, samples, False)
 
     plt.show()
 

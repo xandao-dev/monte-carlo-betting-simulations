@@ -46,6 +46,9 @@ def percentage_system(
         first list contain the X axis lists which is the amount of bets. The
         second list is the Y axis lists which is the bankroll history.
     '''
+    
+    print('*PERCENTAGE SYSTEM*')
+    
     bust_count = 0
     sl_reached_count = 0
     sg_reached_count = 0
@@ -63,12 +66,12 @@ def percentage_system(
         bankroll_history_Y_temp = [bankroll]
         bankroll_temp = bankroll
         for current_bet, bet_result in enumerate(sample_results,1):
-            bet_size = bankroll_temp*bet_percentage
+            bet_value = bankroll_temp*bet_percentage
 
-            if bet_size < minimum_bet_value:
-                bet_size = minimum_bet_value
+            if bet_value < minimum_bet_value:
+                bet_value = minimum_bet_value
 
-            # bankroll <= 1 because it will never bust if we dont use this.
+            # bankroll_temp <= 1 because it will never bust if we dont use this.
             if bankroll_temp <= 1:
                 bust = True
                 break
@@ -84,9 +87,9 @@ def percentage_system(
                     break
 
             if bet_result:
-                bankroll_temp += bet_size*payout_rate
+                bankroll_temp += bet_value*payout_rate
             else:
-                bankroll_temp -= bet_size
+                bankroll_temp -= bet_value
 
             bet_count_history_X_temp.append(current_bet)
             bankroll_history_Y_temp.append(bankroll_temp)
@@ -104,7 +107,6 @@ def percentage_system(
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
 
-    print('*PERCENTAGE SYSTEM*')
     print(f'Final bankroll average: {round(bankroll_average,2)}')
     print(f'Death rate: {round((bust_count/samples)*100,2)}%, '
           f'Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')

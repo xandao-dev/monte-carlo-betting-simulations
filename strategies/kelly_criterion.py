@@ -39,8 +39,9 @@ def kelly_criterion(
         The fraction of kelly is a fraction of the percentage generated,
         changing it can cause overbet or underbet. It can range from 0.0000
         to +infinite, but generally 1, 0.5 or 0.25.
-    minimum_bet_value -> int
-        The minimum bet amount is to avoid making miserably small bets.
+    minimum_bet_value -> Union[int, float]
+        The minimum bet amount is to avoid making miserably small bets. If the
+        amount of the bet is less it will not play.
     stoploss -> Union[int, None]
         If the bankroll is less than the stop loss it stops.
     stopgain -> Union[int, None]
@@ -53,6 +54,9 @@ def kelly_criterion(
         first list contain the X axis lists which is the amount of bets. The
         second list is the Y axis lists which is the bankroll history.
     '''
+    
+    print('*KELLY CRITERION*')
+    
     bust_count = 0
     sl_reached_count = 0
     sg_reached_count = 0
@@ -63,11 +67,14 @@ def kelly_criterion(
     samples = len(results) #It's equal to the number of samples of main.py
     kelly_percentage = win_rate - ((1-win_rate)/(payout_rate/1))
     if kelly_percentage <= 0:
-        print('*KELLY CRITERION*')
         print('Negative Expectation. DO NOT operate!')
-        return None, None
-    bet_size = bankroll*kelly_percentage*kelly_fraction
-
+        return [[],[]]
+    bet_value = bankroll*kelly_percentage*kelly_fraction
+    if bet_value < minimum_bet_value:
+        print('The bet size is smaller than the minimum bet value. '
+              'It will not operate!')
+        return [[],[]]
+    
     for sample_results in results:
         bust = False
         sl_reached = False
@@ -77,6 +84,11 @@ def kelly_criterion(
         bankroll_temp = bankroll
 
         for current_bet, bet_result in enumerate(sample_results,1):
+            # bankroll_temp <= 1 because it will never bust if we dont use this.
+            if bankroll_temp <= 1 or bankroll_temp < minimum_bet_value:
+                bust = True
+                break
+            
             if stoploss is not None:
                 if bankroll_temp <= stoploss:
                     sl_reached = True
@@ -88,9 +100,9 @@ def kelly_criterion(
                     break
 
             if bet_result:
-                bankroll_temp += bet_size*payout_rate
+                bankroll_temp += bet_value*payout_rate
             else:
-                bankroll_temp -= bet_size
+                bankroll_temp -= bet_value
                 if bankroll_temp <= 0:
                     bust = True
                     break
@@ -111,7 +123,6 @@ def kelly_criterion(
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
 
-    print('*KELLY CRITERION*')
     print('Kelly criterion in percentage of capital: '+
           f'{round(kelly_percentage*100,2)}%')
     print(f'Final bankroll average: {round(bankroll_average,2)}')

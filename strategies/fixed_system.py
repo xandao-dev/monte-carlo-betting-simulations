@@ -9,7 +9,9 @@ def fixed_system(
         results: List[List[bool]],
         payout_rate: float,
         bankroll: Union[int, float],
-        bet_percentage: float,
+        bet_value: Union[int,float],
+        minimum_bet_value: Union[int, float],
+        maximum_bet_value: Union[int, float, None],
         stoploss: Union[int, None],
         stopgain: Union[int, None]
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
@@ -27,9 +29,16 @@ def fixed_system(
         this value generally ranges from 0.0000 to 2.0000.
     bankroll -> Union[int, float]
         The bankroll is the amount of money you have to bet.
-    bet_percentage -> float
-        The bet percentage is the amount you will risk on each bet. This value
-        can range from 0.0000 to 1.0000.
+    bet_value -> Union[int,float]
+        The size of the bet, which in this system is fixed.
+    minimum_bet_value -> Union[int, float]
+        The minimum bet value is to avoid making miserably small bets. If the
+        amount of the bet is less than minimum bet value it will be scaled 
+        down to the minimum amount.
+    maximum_bet_value -> Union[int, float, None]
+        The maximum bet value is to avoid making non real big bets. If the
+        amount of the bet is bigger than the maximum bet value, it will be 
+        scaled to maximum amount.
     stoploss -> Union[int, None]
         If the bankroll is less than the stop loss it stops.
     stopgain -> Union[int, None]
@@ -42,6 +51,9 @@ def fixed_system(
         first list contain the X axis lists which is the amount of bets. The
         second list is the Y axis lists which is the bankroll history.
     '''
+    
+    print('*FIXED SYSTEM*')
+    
     bust_count = 0
     sl_reached_count = 0
     sg_reached_count = 0
@@ -50,8 +62,15 @@ def fixed_system(
     bankroll_history_Y = []
 
     samples = len(results) #It's equal to the number of samples of main.py
-    bet_size = bankroll*bet_percentage
-
+    if bet_value < minimum_bet_value:
+        print('The bet size is smaller than the minimum bet value. Bet size '
+              'will be adjusted to minimum, which is {minimum_bet_value}.\n')
+        bet_value = minimum_bet_value
+    elif bet_value > maximum_bet_value:
+        print('The bet size is bigger than the maximum bet value. Bet size '
+              'will be adjusted to maximum, which is {maximum_bet_value}.\n')
+        bet_value = maximum_bet_value
+        
     for sample_results in results:
         bust = False
         sl_reached = False
@@ -71,9 +90,9 @@ def fixed_system(
                     break
 
             if bet_result:
-                bankroll_temp += bet_size*payout_rate
+                bankroll_temp += bet_value*payout_rate
             else:
-                bankroll_temp -= bet_size
+                bankroll_temp -= bet_value
                 if bankroll_temp <= 0:
                     bust = True
                     break
@@ -94,7 +113,6 @@ def fixed_system(
         bankroll_sum += bankroll_history_Y_temp[-1]
     bankroll_average = bankroll_sum/samples
 
-    print('*FIXED SYSTEM*')
     print(f'Final bankroll average: {round(bankroll_average,2)}')
     print(f'Death rate: {round((bust_count/samples)*100,2)}%, '
           f'Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
