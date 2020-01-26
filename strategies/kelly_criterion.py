@@ -104,6 +104,7 @@ def kelly_criterion(
             if stoploss is not None:
                 if bankroll_temp <= stoploss:
                     sl_reached = True
+                    bust = True
                     break
             if stopgain is not None:
                 if bankroll_temp >= stopgain:
