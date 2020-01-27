@@ -4,6 +4,7 @@ __author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
 
 # FIXME Ideia: poder comparar medias
 # FIXME Ideia: ver bankroll maximo
+# FIXME Ideia: melhor sistema (bankroll average * survival rate)
 
 from strategies.fixed_system import fixed_system
 from strategies.percentage_system import percentage_system
@@ -16,15 +17,15 @@ import matplotlib.style as style
 
 style.use('bmh')
 
-
+#region USER INPUT
 # General Input
-samples = 100
-win_rate = 0.5500 # win rate: 0.0000-1.0000
-payout_rate = 0.8500 # payout rate: 0.0000-2.0000 generally, but you choose
+samples = 10
+bet_count = 100000
+win_rate = 0.4857 # win rate: 0.0000-1.0000
+payout_rate = 1.0000 # payout rate: 0.0000-2.0000 generally, but you choose
 bankroll = 1000
 minimum_bet_value = None
 maximum_bet_value = None
-bet_count = 10000
 stoploss = None
 stopgain = None
 
@@ -34,17 +35,9 @@ bet_value = 10
 #Percentage System Input
 bet_percentage = 0.0100 # bet percentage: 0.0000-1.0000
 
-
-
 # Kelly Criterion Input
 kelly_fraction = 1 # kelly fraction: 0.0000 to +inf, generally 1, 0.5 or 0.25
-
-'''
-if bankroll*bet_percentage <= minimum_bet_value:
-    bet_percentage = minimum_bet_value/100.0
-    print('Bet size is less than minimum bet value! Adjusting the bet '
-          f'percentage to {round(bet_percentage*100,4)}%\n')
-'''
+#endregion
 
 def main():
     results = generate_random_bet_results(win_rate, bet_count, samples)
@@ -58,7 +51,7 @@ def main():
         maximum_bet_value,
         stoploss,
         stopgain)
-    plot_config('Fixed System', betX, bkrY, samples, True)
+    plot_config('Fixed System', betX, bkrY, True, 'r')
 
     betX, bkrY = percentage_system(
         results,
@@ -69,7 +62,7 @@ def main():
         maximum_bet_value,
         stoploss,
         stopgain)
-    plot_config('Percentage System', betX, bkrY, samples, True)
+    plot_config('Percentage System', betX, bkrY, True, 'g')
 
     betX, bkrY = kelly_criterion(
         results,
@@ -81,7 +74,7 @@ def main():
         maximum_bet_value,
         stoploss,
         stopgain)
-    plot_config('Kelly Criterion', betX, bkrY, samples, True)
+    plot_config('Kelly Criterion', betX, bkrY, True, 'b')
 
     plt.show()
 
@@ -94,15 +87,15 @@ def generate_random_bet_results(
     '''
     Parameters
     ----------
-    win_rate : float
+    win_rate -> float
         The win rate is a rate that can range from 0.0000 to 1.0000, which
         means the percentage you have of winning.
         To know your win rate you must divide the total bets you won by the
         total bet, the more bets the more
         accurate that rate will be.
-    bet_count : int
+    bet_count -> int
         The bet count is the amount of bets you will simulate.
-    samples : int
+    samples -> int
         The amount of samples that we will plot on the graph.
 
     Returns
@@ -129,25 +122,24 @@ def plot_config(
         title: str,
         bet_count_history_X: List[List[int]],
         bankroll_history_Y: List[List[Union[int, float]]],
-        samples: int,
-        new_fig: bool = True
+        new_fig: bool = True,
+        color: Union[str, None] = None
 ) -> None:
     '''
     Parameters
     ----------
-    title : str
+    title -> str
         The title of the graph.
-    bet_count_history_X : List[List[int]]
+    bet_count_history_X -> List[List[int]]
         bet_count_history_X is a list that contain the X axis lists which is
         the amount of bets.
-    bankroll_history_Y : List[List[Union[int, float]]]
+    bankroll_history_Y -> List[List[Union[int, float]]]
         bankroll_history_Y is a list that contain the Y axis lists which is
         the bankroll history.
-    samples : int
-        The amount of samples that we will plot on the graph.
-    new_fig : bool, optional
+    new_fig -> bool, optional
         new_fig is to open a new graph window. The default is True.
-
+    color -> Union[str, None], optional
+        The default is None.
     Returns
     -------
     None
@@ -155,18 +147,21 @@ def plot_config(
     if new_fig:
         plt.figure()
         for x, y in zip(bet_count_history_X, bankroll_history_Y):
-            plt.plot(x, y, linewidth = 0.6)
+            plt.plot(x, y, linewidth = 0.8)
         plt.title(title)
-    elif not new_fig and samples <= 3:
-        #FIXME: Add colors and remove sample limiting!
+    elif not new_fig and color is None:
         for x, y in zip(bet_count_history_X, bankroll_history_Y):
-            plt.plot(x, y, linewidth = 0.6, label=title)
+            plt.plot(x, y, linewidth = 0.8)
+    else:
+        label_assigned = False
+        for x, y in zip(bet_count_history_X, bankroll_history_Y):
+            if not label_assigned:
+                plt.plot(x, y, linewidth = 0.8, label=title, color=color)
+                label_assigned = True
+            plt.plot(x, y, linewidth = 0.8, color=color)
         leg = plt.legend()
         for line in leg.get_lines():
             line.set_linewidth(4.0)
-    else:
-        for x, y in zip(bet_count_history_X, bankroll_history_Y):
-            plt.plot(x, y, linewidth = 0.6)
 
     plt.ylabel('Bankroll')
     plt.xlabel('Bet Count')
