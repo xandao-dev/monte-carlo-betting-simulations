@@ -1,9 +1,6 @@
-__author__ = 'Alexandre Calil Martins Fonseca, Github: xandao6'
-# -*- coding: utf-8 -*-
-
 from typing import Union, Tuple, List
-from .Bettor import Bettor
-from .ui import *
+#from .Bettor import Bettor
+from .ui import print_stats
 import matplotlib.pyplot as plt
 
 """
@@ -11,16 +8,22 @@ Strategies TODO: dAlembert, fibonacci, martingale,
 oscars_grind, patrick, sorogales, soros, whittaker
 """
 
-def fixed_system(
-        results: List[List[bool]],
-        payout_rate: float,
-        bankroll: Union[int, float],
-        bet_value: Union[int,float],
-        minimum_bet_value: Union[int, float, None],
-        maximum_bet_value: Union[int, float, None],
-        stoploss: Union[int, None],
-        stopgain: Union[int, None]
+
+class StrategiesData:
+    def __init__(
+            self, bet_results, general_input, specific_input):
+        self.bet_results = bet_results
+        self.general_input = general_input
+        self.specific_input = specific_input
+
+
+def fixed_bettor(
+    StrategiesData
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
+    bet_results = StrategiesData.bet_results
+    gi = StrategiesData.general_input
+    si = StrategiesData.specific_input
+
     bust_count = 0
     sl_reached_count = 0
     sg_reached_count = 0
@@ -28,40 +31,39 @@ def fixed_system(
     bet_count_history_X = []
     bankroll_history_Y = []
 
-    samples = len(results) #It's equal to the number of samples of main.py
-    if minimum_bet_value is not None:
-        if bet_value < minimum_bet_value:
+    if gi['minimum_bet_value'] is not None:
+        if si['bet_value'] < gi['minimum_bet_value']:
             print('The bet size is smaller than the minimum bet value. Bet size '
-                  'will be adjusted to minimum, which is {minimum_bet_value}.\n')
-            bet_value = minimum_bet_value
-    if maximum_bet_value is not None:
-        if bet_value > maximum_bet_value:
+                  'will be adjusted to minimum, which is {gi["minimum_bet_value"]}.\n')
+            si['bet_value'] = gi['minimum_bet_value']
+    if gi['maximum_bet_value'] is not None:
+        if si['bet_value'] > gi['maximum_bet_value']:
             print('The bet size is bigger than the maximum bet value. Bet size '
-                  'will be adjusted to maximum, which is {maximum_bet_value}.\n')
-            bet_value = maximum_bet_value
-        
-    for sample_results in results:
+                  'will be adjusted to maximum, which is {gi["maximum_bet_value"]}.\n')
+            si['bet_value'] = gi['maximum_bet_value']
+
+    for sample_results in bet_results:
         bust = False
         sl_reached = False
         sg_reached = False
         bet_count_history_X_temp = [0]
-        bankroll_history_Y_temp = [bankroll]
-        bankroll_temp = bankroll
-        for current_bet, bet_result in enumerate(sample_results,1):
-            if stoploss is not None:
-                if bankroll_temp <= stoploss:
+        bankroll_history_Y_temp = [gi['bankroll']]
+        bankroll_temp = gi['bankroll']
+        for current_bet, bet_result in enumerate(sample_results, 1):
+            if gi['stoploss'] is not None:
+                if bankroll_temp <= gi['stoploss']:
                     sl_reached = True
                     bust = True
                     break
-            if stopgain is not None:
-                if bankroll_temp >= stopgain:
+            if gi['stopgain'] is not None:
+                if bankroll_temp >= gi['stopgain']:
                     sg_reached = True
                     break
 
             if bet_result:
-                bankroll_temp += bet_value*payout_rate
+                bankroll_temp += si['bet_value']*gi['payout_rate']
             else:
-                bankroll_temp -= bet_value
+                bankroll_temp -= si['bet_value']
                 if bankroll_temp <= 0:
                     bust = True
                     break
@@ -80,27 +82,24 @@ def fixed_system(
         bankroll_history_Y.append(bankroll_history_Y_temp.copy())
 
         bankroll_sum += bankroll_history_Y_temp[-1]
-    bankroll_average = bankroll_sum/samples
+    bankroll_average = bankroll_sum/gi['samples']
 
-    print(f'Final bankroll average: {round(bankroll_average,2)}')
-    print(f'Death rate: {round((bust_count/samples)*100,2)}%, '
-          f'Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
-    print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
-    print(f'{sl_reached_count} stoploss reached of {samples} in Fixed Sys.!')
-    print(f'{sg_reached_count} stopgain reached of {samples} in Fixed Sys.!\n')
+    print(f'Final gi["bankroll"] average: {round(bankroll_average,2)}')
+    print(f'Death rate: {round((bust_count/gi["samples"])*100,2)}%, '
+          f'Survival rate: {100.0 - round((bust_count/gi["samples"])*100,2)}%')
+    print(f'{bust_count} broken of {gi["samples"]} samples in Fixed Sys.!')
+    print(f'{sl_reached_count} gi["stoploss"] reached of {gi["samples"]} in Fixed Sys.!')
+    print(f'{sg_reached_count} gi["stopgain"] reached of {gi["samples"]} in Fixed Sys.!\n')
     return bet_count_history_X, bankroll_history_Y
 
 
-    def percentage_system(
-        results: List[List[bool]],
-        payout_rate: float,
-        bankroll: Union[int, float],
-        bet_percentage: float,
-        minimum_bet_value: Union[int, float, None],
-        maximum_bet_value: Union[int, float, None],
-        stoploss: Union[int, None],
-        stopgain: Union[int, None]
+def percentage_bettor(
+    StrategiesData
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
+    bet_results = StrategiesData.bet_results
+    gi = StrategiesData.general_input
+    si = StrategiesData.specific_input
+
     bust_count = 0
     sl_reached_count = 0
     sg_reached_count = 0
@@ -108,42 +107,41 @@ def fixed_system(
     bet_count_history_X = []
     bankroll_history_Y = []
 
-    samples = len(results) #It's equal to the number of samples of main.py
-    for sample_results in results:
+    for sample_results in bet_results:
         bust = False
         sl_reached = False
         sg_reached = False
         bet_count_history_X_temp = [0]
-        bankroll_history_Y_temp = [bankroll]
-        bankroll_temp = bankroll
-        for current_bet, bet_result in enumerate(sample_results,1):
-            bet_value = bankroll_temp*bet_percentage
+        bankroll_history_Y_temp = [gi['bankroll']]
+        bankroll_temp = gi['bankroll']
+        for current_bet, bet_result in enumerate(sample_results, 1):
+            bet_value = bankroll_temp*si['bet_percentage']
 
-            #temporary bet limiting, to minimum or maximum
-            if minimum_bet_value is not None: 
-                if bet_value < minimum_bet_value:
-                    bet_value = minimum_bet_value
-            if maximum_bet_value is not None:
-                if bet_value > maximum_bet_value:
-                    bet_value = maximum_bet_value
+            # temporary bet limiting, to minimum or maximum
+            if gi['minimum_bet_value'] is not None:
+                if bet_value < gi['minimum_bet_value']:
+                    bet_value = gi['minimum_bet_value']
+            if gi['maximum_bet_value'] is not None:
+                if bet_value > gi['maximum_bet_value']:
+                    bet_value = gi['maximum_bet_value']
 
             # bankroll_temp <= 1 because it will never bust if we dont use this.
             if bankroll_temp <= 1:
                 bust = True
                 break
 
-            if stoploss is not None:
-                if bankroll_temp <= stoploss:
+            if gi['stoploss'] is not None:
+                if bankroll_temp <= gi['stoploss']:
                     sl_reached = True
                     bust = True
                     break
-            if stopgain is not None:
-                if bankroll_temp >= stopgain:
+            if gi['stopgain'] is not None:
+                if bankroll_temp >= gi['stopgain']:
                     sg_reached = True
                     break
 
             if bet_result:
-                bankroll_temp += bet_value*payout_rate
+                bankroll_temp += bet_value*gi['payout_rate']
             else:
                 bankroll_temp -= bet_value
 
@@ -161,28 +159,18 @@ def fixed_system(
         bankroll_history_Y.append(bankroll_history_Y_temp.copy())
 
         bankroll_sum += bankroll_history_Y_temp[-1]
-    bankroll_average = bankroll_sum/samples
+    bankroll_average = bankroll_sum/gi['samples']
 
-    print(f'Final bankroll average: {round(bankroll_average,2)}')
-    print(f'Death rate: {round((bust_count/samples)*100,2)}%, '
-          f'Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
-    print(f'{bust_count} broken of {samples} samples in Perc. Sys.!')
-    print(f'{sl_reached_count} stoploss reached of {samples} in Perc. Sys.!')
-    print(f'{sg_reached_count} stopgain reached of {samples} in Perc. Sys.!\n')
     return bet_count_history_X, bankroll_history_Y
 
 
-    def kelly_criterion(
-        results: List[List[bool]],
-        win_rate: float,
-        payout_rate: float,
-        bankroll: Union[int, float],
-        kelly_fraction: float,
-        minimum_bet_value: Union[int, float],
-        maximum_bet_value: Union[int, float, None],
-        stoploss: Union[int, None],
-        stopgain: Union[int, None]
+def kelly_criterion(
+    StrategiesData
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
+    bet_results = StrategiesData.bet_results
+    gi = StrategiesData.general_input
+    si = StrategiesData.specific_input
+
     bust_count = 0
     sl_reached_count = 0
     sg_reached_count = 0
@@ -190,47 +178,46 @@ def fixed_system(
     bet_count_history_X = []
     bankroll_history_Y = []
 
-    samples = len(results) #It's equal to the number of samples of main.py
-    kelly_percentage = win_rate - ((1-win_rate)/(payout_rate/1))
+    kelly_percentage = gi['win_rate'] - ((1-gi['win_rate'])/(gi['payout_rate']/1))
     if kelly_percentage <= 0:
         print('Negative Expectation. DO NOT operate!')
-        return [[],[]]
-    for sample_results in results:
+        return [[], []]
+    for sample_results in bet_results:
         bust = False
         sl_reached = False
         sg_reached = False
         bet_count_history_X_temp = [0]
-        bankroll_history_Y_temp = [bankroll]
-        bankroll_temp = bankroll
+        bankroll_history_Y_temp = [gi['bankroll']]
+        bankroll_temp = gi['bankroll']
 
-        for current_bet, bet_result in enumerate(sample_results,1):
-            bet_value = bankroll_temp*kelly_percentage*kelly_fraction
-            
-            #temporary bet limiting, to minimum or maximum
-            if minimum_bet_value is not None: 
-                if bet_value < minimum_bet_value:
-                    bet_value = minimum_bet_value
-            if maximum_bet_value is not None:
-                if bet_value > maximum_bet_value:
-                    bet_value = maximum_bet_value
-            
+        for current_bet, bet_result in enumerate(sample_results, 1):
+            bet_value = bankroll_temp*kelly_percentage*si['kelly_fraction']
+
+            # temporary bet limiting, to minimum or maximum
+            if gi['minimum_bet_value'] is not None:
+                if bet_value < gi['minimum_bet_value']:
+                    bet_value = gi['minimum_bet_value']
+            if gi['maximum_bet_value'] is not None:
+                if bet_value > gi['maximum_bet_value']:
+                    bet_value = gi['maximum_bet_value']
+
             # bankroll_temp <= 1 because it will never bust if we dont use this.
-            if bankroll_temp <= 1 :
+            if bankroll_temp <= 1:
                 bust = True
                 break
-            
-            if stoploss is not None:
-                if bankroll_temp <= stoploss:
+
+            if gi['stoploss'] is not None:
+                if bankroll_temp <= gi['stoploss']:
                     sl_reached = True
                     bust = True
                     break
-            if stopgain is not None:
-                if bankroll_temp >= stopgain:
+            if gi['stopgain'] is not None:
+                if bankroll_temp >= gi['stopgain']:
                     sg_reached = True
                     break
 
             if bet_result:
-                bankroll_temp += bet_value*payout_rate
+                bankroll_temp += bet_value*gi['payout_rate']
             else:
                 bankroll_temp -= bet_value
                 if bankroll_temp <= 0:
@@ -251,14 +238,8 @@ def fixed_system(
         bankroll_history_Y.append(bankroll_history_Y_temp.copy())
 
         bankroll_sum += bankroll_history_Y_temp[-1]
-    bankroll_average = bankroll_sum/samples
+    bankroll_average = bankroll_sum/gi['samples']
 
-    print('Kelly criterion in percentage of capital: '+
+    print('Kelly criterion in percentage of capital: ' +
           f'{round(kelly_percentage*100,2)}%')
-    print(f'Final bankroll average: {round(bankroll_average,2)}')
-    print(f'Death rate: {round((bust_count/samples)*100,2)}%, '
-          f'Survival rate: {100.0 - round((bust_count/samples)*100,2)}%')
-    print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
-    print(f'{sl_reached_count} stoploss reached of {samples} in Fixed Sys.!')
-    print(f'{sg_reached_count} stopgain reached of {samples} in Fixed Sys.!\n')
     return bet_count_history_X, bankroll_history_Y
