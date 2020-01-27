@@ -3,5 +3,4 @@ Others
 .spyproject
 .ipynb_checkpoints
 __pycache__
-mcsim.py
-mit.py
+future_use_code.py
