@@ -7,23 +7,88 @@ HomelessSandwich/MonteCarloBettingSim is licensed under MIT
 
 from random import uniform
 from typing import Union, List
-'''
+
+
 class Bettor:
-    def __init__(self, initial_funds, colour):
-        self.initial_funds = initial_funds
-        self.funds = initial_funds
-        self.colour = colour
+    def __init__(self, user_input):
+        self.user_input = user_input
         self.win_previous = True
         self.funds_history = []
 
     @staticmethod
-    def bet_outcome():
-        roll = round(random.uniform(0,1),4)
-        if roll <= 50:
-            return False
-        else:
-            return True
+    def generate_random_bet_results(user_input: dict) -> List[List[bool]]:
+        '''
+        Parameters
+        ----------
+        Returns
+        -------
+        List[List[bool]]
+            The bet_results are a list of betting results, the innermost lists
+            represent the amount of bets and the outermost lists represent
+            the number of samples.
+        '''
+        bet_results = []
+        for _ in range(user_input['samples']):
+            results_temp = []
+            for _ in range(user_input['bet_count']):
+                result = round(uniform(0, 1), 4)
+                if result <= user_input['win_rate']:
+                    results_temp.append(True)
+                elif result > user_input['win_rate']:
+                    results_temp.append(False)
+            bet_results.append(results_temp.copy())
+        return bet_results
 
+    def max_min_verify(self, bet_value):
+        if self.user_input['minimum_bet_value'] is not None:
+            if bet_value < self.user_input['minimum_bet_value']:
+                bet_value = self.user_input['minimum_bet_value']
+        if self.user_input['maximum_bet_value'] is not None:
+            if bet_value > self.user_input['maximum_bet_value']:
+                bet_value = self.user_input['maximum_bet_value']
+        return bet_value
+
+    def stoploss_verify(self, current_bankroll):
+        stoploss_reached = False
+        if self.user_input['stoploss'] is not None:
+            if current_bankroll <= self.user_input['stoploss']:
+                stoploss_reached = True
+        return stoploss_reached
+
+    def stopgain_verify(self, current_bankroll):
+        stopgain_reached = False
+        if self.user_input['stopgain'] is not None:
+            if current_bankroll >= self.user_input['stopgain']:
+                stopgain_reached = True
+        return stopgain_reached
+
+    def broke_verify(self, current_bankroll):
+        if current_bankroll <= 0:
+            broke = True
+        else:
+            broke = False
+        return broke
+
+    def profit(self, current_bankroll):
+        return current_bankroll - self.user_input['initial_bankroll']
+
+    def bet(self, bet_result, bet_value, current_bankroll):
+        if bet_result:
+            current_bankroll += bet_value*self.user_input['payout_rate']
+        else:
+            current_bankroll -= bet_value
+        return current_bankroll
+
+    def get_bet_count_histories(self, bankroll_histories):
+        bet_count_histories = []
+        for index, bankroll_history in enumerate(bankroll_histories):
+            bet_count_histories.append(
+                list(zip(*enumerate(bankroll_history, 1))))
+            bet_count_histories[index] = list(bet_count_histories[index][0])
+        return bet_count_histories
+
+
+'''
     @property
     def broke(self):
         if self.funds == 0:
@@ -31,9 +96,7 @@ class Bettor:
         else:
             return False
 
-    @property
-    def profit(self):
-        return self.funds - self.initial_funds
+
 
     def bet(self, wager):
         if self.funds < wager:
@@ -49,28 +112,3 @@ class Bettor:
     def plot_point(self):
         self.funds_history.append(self.funds)
 '''
-
-
-def generate_random_bet_results(general_input: dict) -> List[List[bool]]:
-    '''
-    Parameters
-    ----------
-    Returns
-    -------
-    List[List[bool]]
-        The results are a list of betting results, the innermost lists
-        represent the amount of bets and the outermost lists represent
-        the number of samples.
-    '''
-    gi = general_input
-    results = []
-    for _ in range(gi['samples']):
-        results_temp = []
-        for _ in range(gi['bet_count']):
-            result = round(uniform(0,1),4)
-            if result <= gi['win_rate']:
-                results_temp.append(True)
-            elif result > gi['win_rate']:
-                results_temp.append(False)
-        results.append(results_temp.copy())
-    return results
