@@ -5,11 +5,11 @@ https://github.com/HomelessSandwich/MonteCarloBettingSim
 HomelessSandwich/MonteCarloBettingSim is licensed under MIT
 '''
 
-def print_stats(num_broke, num_profitors, sample_size, profits, loses, title):
-    broke_percent = (num_broke / sample_size) * 100
-    profit_percent = (num_profitors / sample_size) * 100
+def print_stats(samples, bust_count, num_profitors, profits, loses, title):
+    broke_percent = (bust_count / samples) * 100
+    profit_percent = (num_profitors / samples) * 100
     try:
-        survive_profit_percent = (num_profitors / (sample_size - num_broke)) * 100
+        survive_profit_percent = (num_profitors / (samples - bust_count)) * 100
     except ZeroDivisionError:
         survive_profit_percent = 0
     try:
