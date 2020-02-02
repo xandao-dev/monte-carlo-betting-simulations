@@ -13,7 +13,7 @@ def fixed_bettor(
     user_input,
     title='Fixed Bettor',
     bet_value=None
-) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
+) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
     bettor = Bettor(user_input)
 
     sl_reached_count = 0
@@ -72,7 +72,7 @@ def percentage_bettor(
     user_input,
     title='Percentage Bettor',
     bet_percentage=None
-) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
+) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
     bettor = Bettor(user_input)
 
     sl_reached_count = 0
@@ -133,7 +133,7 @@ def kelly_criterion(
     user_input,
     title='Kelly Criterion',
     kelly_fraction=None
-) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
+) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
     bettor = Bettor(user_input)
 
     sl_reached_count = 0
