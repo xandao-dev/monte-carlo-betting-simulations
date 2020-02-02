@@ -37,7 +37,9 @@ def single_bettor(wager, sample_size, number_bets, initial_funds, colour):
 
 def fixed_bettor(
     bet_results,
-    user_input
+    user_input,
+    title = 'Fixed Bettor',
+    bet_value = None
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]]]:
     bettor = Bettor(user_input)
 
@@ -51,7 +53,10 @@ def fixed_bettor(
     bet_count_histories = []
     bankroll_histories = []
 
-    bet_value = bettor.max_min_verify(user_input['bet_value'])
+    if bet_value is None:
+        bet_value = user_input['bet_value']
+    bet_value = bettor.max_min_verify(bet_value)
+    
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
         current_bankroll = user_input['initial_bankroll']
@@ -64,15 +69,15 @@ def fixed_bettor(
             stoploss_reached = bettor.stoploss_verify(current_bankroll)
             stopgain_reached = bettor.stopgain_verify(current_bankroll)
             if broke or stoploss_reached or stopgain_reached:
+                current_bankroll = bankroll_history[-1]
                 break
-
             bankroll_history.append(current_bankroll)
 
-        #if bettor.profit(current_bankroll) > 0:
-        #    profitors_count += 1
-        #    profits.append(bettor.profit(current_bankroll))
-        #else:
-        #    loses.append(bettor.profit(current_bankroll))
+        if bettor.profit(current_bankroll) > 0:
+            profitors_count += 1
+            profits.append(bettor.profit(current_bankroll))
+        else:
+            loses.append(bettor.profit(current_bankroll))
         if broke:
             broke_count += 1
         if stoploss_reached:
@@ -83,9 +88,15 @@ def fixed_bettor(
         bankroll_histories.append(bankroll_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
-    print_stats(user_input['samples'], broke_count, profitors_count, profits, loses, 'Fixed Bettor')
+    print_stats(
+        user_input, bankroll_histories, broke_count, 
+        profitors_count, profits, loses, title)
     return bet_count_histories, bankroll_histories
 
+'''
+def percentage_bettor(
+    
+'''
 
 '''
 def percentage_bettor(
