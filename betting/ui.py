@@ -5,9 +5,10 @@ https://github.com/HomelessSandwich/MonteCarloBettingSim
 HomelessSandwich/MonteCarloBettingSim is licensed under MIT
 '''
 
+
 def print_stats(
-    user_input, bankroll_histories, broke_count,
-    profitors_count, profits, loses, title
+    user_input, bankroll_histories, broke_count, profitors_count,
+    profits, loses, title, kelly_percentage=None
 ) -> None:
 
     broke_percent = (broke_count / user_input['samples']) * 100
@@ -33,6 +34,9 @@ def print_stats(
         avg_loses = 0
 
     print(f'\n*{title.upper()}*')
+    if kelly_percentage is not None:
+        print('Kelly criterion in percentage of capital: ' +
+              f'{round(kelly_percentage*100,2)}%')
     print(f'Percentage Broke: {broke_percent}%')
     print(f'Percentage Profited: {profit_percent}%')
     print(f'Percentage Survivors Profited: {survive_profit_percent}%')
