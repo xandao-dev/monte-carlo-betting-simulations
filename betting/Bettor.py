@@ -12,7 +12,6 @@ from typing import Union, List
 class Bettor:
     def __init__(self, user_input):
         self.user_input = user_input
-        self.funds_history = []
 
     @staticmethod
     def generate_random_bet_results(user_input: dict) -> List[List[bool]]:
