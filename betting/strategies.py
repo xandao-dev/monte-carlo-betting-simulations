@@ -56,7 +56,7 @@ def fixed_bettor(
     if bet_value is None:
         bet_value = user_input['bet_value']
     bet_value = bettor.max_min_verify(bet_value)
-    
+
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
         current_bankroll = user_input['initial_bankroll']
@@ -91,7 +91,7 @@ def fixed_bettor(
     print_stats(
         user_input, bankroll_histories, broke_count, 
         profitors_count, profits, loses, title)
-    return bet_count_histories, bankroll_histories
+    return bet_count_histories, bankroll_histories, title
 
 '''
 def percentage_bettor(
