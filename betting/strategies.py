@@ -8,34 +8,6 @@ Strategies TODO: dAlembert, fibonacci, martingale,
 oscars_grind, patrick, sorogales, soros, whittaker
 """
 
-'''
-def single_bettor(wager, sample_size, number_bets, initial_funds, colour):
-    num_broke = 0
-    num_profitors = 0
-    profits = []
-    loses = []
-
-    for i in range(sample_size):
-        bettor = Bettor(initial_funds, colour)
-        bettor.plot_point()
-        for i in range(number_bets):
-            if not bettor.broke:
-                bettor.bet(wager)
-            else:
-                num_broke += 1
-                break
-        if bettor.profit > 0:
-            num_profitors += 1
-            profits.append(bettor.profit)
-        else:
-            loses.append(bettor.profit)
-        plt.plot(range(len(bettor.funds_history)),
-                 bettor.funds_history, colour)
-    print_stats(num_broke, num_profitors, sample_size,
-                profits, loses, 'Single Bettor')
-'''
-
-
 def fixed_bettor(
     bet_results,
     user_input,
