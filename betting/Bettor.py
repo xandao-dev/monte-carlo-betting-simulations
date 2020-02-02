@@ -12,7 +12,6 @@ from typing import Union, List
 class Bettor:
     def __init__(self, user_input):
         self.user_input = user_input
-        self.win_previous = True
         self.funds_history = []
 
     @staticmethod
@@ -62,8 +61,9 @@ class Bettor:
                 stopgain_reached = True
         return stopgain_reached
 
-    def broke_verify(self, current_bankroll):
-        if current_bankroll <= 0:
+    def broke_verify(self, current_bankroll, broke_value = 0):
+        #On percentage systems we must use broke_value = 1
+        if current_bankroll <= broke_value:
             broke = True
         else:
             broke = False
@@ -86,29 +86,3 @@ class Bettor:
                 list(zip(*enumerate(bankroll_history, 1))))
             bet_count_histories[index] = list(bet_count_histories[index][0])
         return bet_count_histories
-
-
-'''
-    @property
-    def broke(self):
-        if self.funds == 0:
-            return True
-        else:
-            return False
-
-
-
-    def bet(self, wager):
-        if self.funds < wager:
-                wager = self.funds
-        if self.bet_outcome():
-            self.win_previous = True
-            self.funds += wager
-        else:
-            self.win_previous = False
-            self.funds -= wager
-        self.plot_point()
-
-    def plot_point(self):
-        self.funds_history.append(self.funds)
-'''
