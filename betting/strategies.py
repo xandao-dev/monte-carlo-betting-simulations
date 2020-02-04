@@ -194,7 +194,7 @@ def kelly_criterion(
 
     print_stats(
         user_input, bankroll_histories, broke_count,
-        profitors_count, profits, loses, title)
+        profitors_count, profits, loses, title, kelly_percentage)
     return bet_count_histories, bankroll_histories, title
 
 
@@ -218,7 +218,6 @@ def martingale(
     bet_count_histories = []
     bankroll_histories = []
 
-    # FIXME this also go inside loop
     if bet_value is None:
         bet_value = user_input['bet_value']
     bet_value = bettor.max_min_verify(bet_value)
@@ -231,6 +230,7 @@ def martingale(
         for i, bet_result in enumerate(sample_result):
             if sample_result[i-1] == False and i > 0:
                 bet_value = 2*bet_value
+                bet_value = bettor.max_min_verify(bet_value)
             else:
                 bet_value = initial_bet_value
 
