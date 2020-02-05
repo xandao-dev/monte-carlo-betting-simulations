@@ -10,9 +10,9 @@ class PlotGraph:
     
     def config(
             self,
-            title: str,
             bet_count_history_X: List[List[int]],
             bankroll_history_Y: List[List[Union[int, float]]],
+            title: str,
             new_fig: bool = True,
             color: Union[str, None] = None
     ) -> None:
