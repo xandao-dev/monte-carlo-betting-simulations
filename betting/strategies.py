@@ -133,7 +133,7 @@ def kelly_criterion(
     bet_results,
     user_input,
     title='Kelly Criterion',
-    kelly_fraction=None
+    kelly_fraction=1
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
     bettor = Bettor(user_input)
 
@@ -146,9 +146,6 @@ def kelly_criterion(
     loses = []
     bet_count_histories = []
     bankroll_histories = []
-
-    if kelly_fraction is None:
-        kelly_fraction = user_input['kelly_fraction']
 
     kelly_percentage = user_input['win_rate'] - \
         ((1-user_input['win_rate'])/(user_input['payout_rate']/1))
@@ -198,16 +195,18 @@ def kelly_criterion(
     return bet_count_histories, bankroll_histories, title
 
 
-# martingale -> fixed or percentage, normal or inverted, factor
-# first will be fixed and normal with factor 2
-def martingale(
+def fixed_martingale(
     bet_results,
     user_input,
     title='Martingale',
-    bet_value=None
+    bet_value=None,
+    multiplication_factor=2,
+    round_limit=10,
+    inverted=False
 ) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
     bettor = Bettor(user_input)
 
+    current_round = 0
     sl_reached_count = 0
     sg_reached_count = 0
     broke_count = 0
@@ -228,11 +227,22 @@ def martingale(
         current_bankroll = user_input['initial_bankroll']
 
         for i, bet_result in enumerate(sample_result):
-            if sample_result[i-1] == False and i > 0:
-                bet_value = 2*bet_value
-                bet_value = bettor.max_min_verify(bet_value)
+            if not inverted:
+                if sample_result[i-1] == False and i > 0 and current_round < round_limit:
+                    bet_value = multiplication_factor*bet_value
+                    bet_value = bettor.max_min_verify(bet_value)
+                    current_round += 1
+                else:
+                    bet_value = initial_bet_value
+                    current_round = 0
             else:
-                bet_value = initial_bet_value
+                if sample_result[i-1] == True and i > 0 and current_round < round_limit:
+                    bet_value = multiplication_factor*bet_value
+                    bet_value = bettor.max_min_verify(bet_value)
+                    current_round += 1
+                else:
+                    bet_value = initial_bet_value
+                    current_round = 0
 
             current_bankroll = bettor.bet(
                 bet_result, bet_value, current_bankroll)
