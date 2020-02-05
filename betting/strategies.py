@@ -281,6 +281,7 @@ def percentage_martingale(
     user_input,
     title='Percentage Martingale',
     bet_percentage=None,
+    use_kelly_percentage=False,
     multiplication_factor=2,
     round_limit=10,
     inverted=False
@@ -300,6 +301,14 @@ def percentage_martingale(
 
     if bet_percentage is None:
         bet_percentage = user_input['bet_percentage']
+    if use_kelly_percentage:
+        bet_percentage = user_input['win_rate'] - \
+            ((1-user_input['win_rate'])/(user_input['payout_rate']/1))
+        if bet_percentage <= 0:
+            print(f'\n*{title.upper()}*')
+            print('Negative Expectation. DO NOT operate!')
+            # FIXME the script are ploting an empty graph
+            return [[], [], title]
 
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
@@ -351,7 +360,13 @@ def percentage_martingale(
         bankroll_histories.append(bankroll_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
-    print_stats(
-        user_input, bankroll_histories, broke_count,
-        profitors_count, profits, loses, title)
+    if not use_kelly_percentage:
+        print_stats(
+            user_input, bankroll_histories, broke_count,
+            profitors_count, profits, loses, title)
+    else:
+        print_stats(
+            user_input, bankroll_histories, broke_count,
+            profitors_count, profits, loses, title, 
+            kelly_percentage=bet_percentage)
     return bet_count_histories, bankroll_histories, title
