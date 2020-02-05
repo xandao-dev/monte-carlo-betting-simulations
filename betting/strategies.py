@@ -47,7 +47,7 @@ def fixed_bettor(
                 break
             bankroll_history.append(current_bankroll)
 
-        if bettor.profit(current_bankroll) > 0:
+        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
             profits.append(bettor.profit(current_bankroll))
         else:
@@ -108,7 +108,7 @@ def percentage_bettor(
                 break
             bankroll_history.append(current_bankroll)
 
-        if bettor.profit(current_bankroll) > 0:
+        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
             profits.append(bettor.profit(current_bankroll))
         else:
@@ -177,7 +177,7 @@ def kelly_criterion(
                 break
             bankroll_history.append(current_bankroll)
 
-        if bettor.profit(current_bankroll) > 0:
+        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
             profits.append(bettor.profit(current_bankroll))
         else:
@@ -245,7 +245,7 @@ def martingale(
                 break
             bankroll_history.append(current_bankroll)
 
-        if bettor.profit(current_bankroll) > 0:
+        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
             profits.append(bettor.profit(current_bankroll))
         else:
