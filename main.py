@@ -6,7 +6,7 @@ Credits: Oliver Wilkins
 https://github.com/HomelessSandwich/MonteCarloBettingSim
 '''
 from betting.strategies import fixed_bettor, percentage_bettor, kelly_criterion
-from betting.strategies import fixed_martingale
+from betting.strategies import fixed_martingale, percentage_martingale
 from betting.Bettor import Bettor
 from betting.PlotGraph import PlotGraph
 from typing import Union, List
@@ -27,28 +27,39 @@ user_input = {
     # SPECIFIC INPUT
     'bet_value': 10,  # Fixed System
     'bet_percentage': 0.0100,  # Percentage System, range: 0.0000-1.0000
-    }
+}
 # endregion
 
 
 def main():
-    data = fixed_bettor(bet_results, user_input)
-    plt.config(*data, new_fig=True, color='r')
 
-    data = percentage_bettor(bet_results, user_input)
-    plt.config(*data, new_fig=True, color='g')
+    #data = fixed_bettor(bet_results, user_input)
+    #plt.config(*data)
 
-    data = kelly_criterion(bet_results, user_input)
-    plt.config(*data, new_fig=True, color='b')
+    #data = percentage_bettor(bet_results, user_input)
+    #plt.config(*data)
 
-    data = fixed_martingale(bet_results, user_input, title='MG Normal')
-    plt.config(*data, new_fig=True, color='c')
-    
-    data = fixed_martingale(bet_results, user_input, title='Anti-MG', inverted=True)
-    plt.config(*data, new_fig=True, color='c')
+    #data = kelly_criterion(bet_results, user_input)
+    #plt.config(*data)
+
+    #data = fixed_martingale(bet_results, user_input)
+    #plt.config(*data)
+
+    #data = fixed_martingale(bet_results, user_input, inverted=True,
+    #                        title='Fixed Anti-Martingale')
+    #plt.config(*data)
+
+    #data = percentage_martingale(bet_results, user_input)
+    #plt.config(*data)
+
+    #data = percentage_martingale(bet_results, user_input, inverted=True,
+    #                             title='Percentage Anti-Martingale')
+    #plt.config(*data)
+
+    plt.show()# Show Graphs
+
 
 if __name__ == '__main__':
     bet_results = Bettor.generate_random_bet_results(user_input)
     plt = PlotGraph(user_input['initial_bankroll'])
     main()
-    plt.show()
