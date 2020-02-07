@@ -32,19 +32,44 @@ def print_stats(
         avg_loses = round(sum(loses) / len(loses), 2)
     except ZeroDivisionError:
         avg_loses = 0
-
-    print(f'\n*{title.upper()}*')
+    print('\n'+'-'*80)
+    print(user_input['currency'])
+    print(f'*{title.upper()}*')
     if kelly_percentage is not None:
         print('Kelly criterion in percentage of capital: ' +
               f'{round(kelly_percentage*100,2)}%')
     print(f'Percentage Broke: {broke_percent}%')
     print(f'Percentage Profited: {profit_percent}%')
     print(f'Percentage Survivors Profited: {survive_profit_percent}%')
-    print(f'Final Bankroll Average: {final_bankroll_average}')
-    print(f'Average Profit: {avg_profit}')
-    print(f'Average Loses: {avg_loses}')
-    print(f'Expected Profit: {round(avg_profit * (profit_percent/ 100), 2)}')
-    print(f'Expected Loss: {round(avg_loses * (1 - (profit_percent / 100)), 2)}')
+    print(
+        f'Final Bankroll Average: {user_input["currency"]} {final_bankroll_average}')
+    print(f'Average Profit: {user_input["currency"]} {avg_profit}')
+    print(f'Average Loses: {user_input["currency"]} {avg_loses}')
+    print(
+        f'Expected Profit: {user_input["currency"]} {round(avg_profit * (profit_percent/ 100), 2)}')
+    print(
+        f'Expected Loss: {user_input["currency"]} {round(avg_loses * (1 - (profit_percent / 100)), 2)}')
+    print('-'*80)
+
+
+'''
+    print 'number_of_player_win: %s, Percentage: %f %%' % (str(number_of_player_win), float(number_of_player_win/number_of_hand)*100)
+    print 'number_of_banker_win: %s, Percentage: %f %%' % (str(number_of_banker_win), float(number_of_banker_win/number_of_hand)*100)
+    print 'number_of_tie: %s, Percentage: %f %%' % (str(number_of_tie), float(number_of_tie/number_of_hand)*100)
+    print 'number_of_hand: %s' % str(number_of_hand)
+    print 'bet: %s' % str(bet)
+    print 'start_bankroll: %s' % str(start_bankroll)
+    print 'final_bankroll: %s' % str(bankroll)
+    print 'number_of_bet: %s' % str(number_of_bet)
+    print 'Total_bet_value： %s' % str(number_of_bet*bet)
+    print 'House edge： %s' % str(number_of_bet*bet*0.0106)
+    print 'Real Loss： %s' % str(float(start_bankroll-bankroll))
+    print 'i_bet_number_of_banker_win: %s' % str(i_bet_number_of_banker_win) 
+    print 'i_bet_number_of_player_win: %s' % str(i_bet_number_of_player_win) 
+    print 'number_of_win: %s' % str(number_of_win)
+    print 'number_of_push: %s' % str(number_of_push) 
+    print 'number_of_total_loss: %s' % str(number_of_total_loss)
+'''
 
 
 '''
