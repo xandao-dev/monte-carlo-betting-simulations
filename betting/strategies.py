@@ -1,12 +1,14 @@
 from typing import Union, Tuple, List
 from betting.Bettor import Bettor
-from betting.ui import print_stats
+from betting.ui import print_strategy_stats
 import matplotlib.pyplot as plt
 
 """
 Strategies TODO: dAlembert, fibonacci,
 oscars_grind, patrick, sorogales, soros, whittaker
 """
+strategies = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion', 
+              'fixed_martingale', 'percentage_martingale']
 
 
 def fixed_bettor(
@@ -27,9 +29,9 @@ def fixed_bettor(
     bet_count_histories = []
     bankroll_histories = []
 
-    if bet_value is None:
-        bet_value = user_input['bet_value']
-    bet_value = bettor.max_min_verify(bet_value)
+    if bet_value is not None:
+        user_input['bet_value'] = bet_value 
+    user_input['bet_value'] = bettor.max_min_verify(user_input['bet_value'])
 
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
@@ -37,7 +39,7 @@ def fixed_bettor(
 
         for bet_result in sample_result:
             current_bankroll = bettor.bet(
-                bet_result, bet_value, current_bankroll)
+                bet_result, user_input['bet_value'], current_bankroll)
 
             broke = bettor.broke_verify(current_bankroll)
             stoploss_reached = bettor.stoploss_verify(current_bankroll)
@@ -62,7 +64,7 @@ def fixed_bettor(
         bankroll_histories.append(bankroll_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
-    print_stats(
+    print_strategy_stats(
         user_input, bankroll_histories, broke_count,
         profitors_count, profits, loses, title)
     return bet_count_histories, bankroll_histories, title
@@ -123,7 +125,7 @@ def percentage_bettor(
         bankroll_histories.append(bankroll_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
-    print_stats(
+    print_strategy_stats(
         user_input, bankroll_histories, broke_count,
         profitors_count, profits, loses, title)
     return bet_count_histories, bankroll_histories, title
@@ -189,7 +191,7 @@ def kelly_criterion(
         bankroll_histories.append(bankroll_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
-    print_stats(
+    print_strategy_stats(
         user_input, bankroll_histories, broke_count,
         profitors_count, profits, loses, title, kelly_percentage)
     return bet_count_histories, bankroll_histories, title
@@ -270,7 +272,7 @@ def fixed_martingale(
         bankroll_histories.append(bankroll_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
-    print_stats(
+    print_strategy_stats(
         user_input, bankroll_histories, broke_count,
         profitors_count, profits, loses, title)
     return bet_count_histories, bankroll_histories, title
@@ -361,12 +363,12 @@ def percentage_martingale(
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
     if not use_kelly_percentage:
-        print_stats(
+        print_strategy_stats(
             user_input, bankroll_histories, broke_count,
             profitors_count, profits, loses, title)
     else:
-        print_stats(
+        print_strategy_stats(
             user_input, bankroll_histories, broke_count,
-            profitors_count, profits, loses, title, 
+            profitors_count, profits, loses, title,
             kelly_percentage=bet_percentage)
     return bet_count_histories, bankroll_histories, title
