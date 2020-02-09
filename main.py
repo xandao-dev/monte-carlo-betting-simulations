@@ -9,15 +9,17 @@ from betting.strategies import fixed_bettor, percentage_bettor, kelly_criterion
 from betting.strategies import fixed_martingale, percentage_martingale
 from betting.Bettor import Bettor
 from betting.PlotGraph import PlotGraph
+from betting.ui import print_indicators_tutorial, print_general_stats
 from typing import Union, List
 
 
 # region USER INPUT
 user_input = {
-    'samples': 250,
-    'bet_count': 5000,
+    'samples': 500,
+    'bet_count': 1000,
     'win_rate': 0.5500,  # range: 0.0000-1.0000
-    'payout_rate': 0.8500,  # range: 0.0000-2.0000 generally, but you choose
+    'lose_rate': 0.4500, # range: 1.0000-0.0000
+    'payout_rate': 0.8700,  # range: 0.0000-2.0000 generally, but you choose
     'initial_bankroll': 1000,
     'currency': '$',
     'minimum_bet_value': None,
@@ -25,16 +27,18 @@ user_input = {
     'stoploss': None,
     'stopgain': None,
     # SPECIFIC INPUT
-    'bet_value': 10,  # Fixed System
-    'bet_percentage': 0.0100,  # Percentage System, range: 0.0000-1.0000
+    'bet_value': 10,  # Fixed System and MG
+    'bet_percentage': 0.0100,  # Percentage System and MG, range: 0.0000-1.0000
 }
 # endregion
 
 
 def main():
+    #print_indicators_tutorial('PORTUGUESE')
+    print_general_stats(user_input)
 
-    #data = fixed_bettor(bet_results, user_input)
-    #plt.config(*data)
+    data = fixed_bettor(bet_results, user_input)
+    plt.config(*data)
 
     #data = percentage_bettor(bet_results, user_input)
     #plt.config(*data)
@@ -56,7 +60,7 @@ def main():
     #                             title='Percentage Anti-Martingale')
     #plt.config(*data)
 
-    plt.show()# Show Graphs
+    #plt.show()# Show Graphs
 
 
 if __name__ == '__main__':
