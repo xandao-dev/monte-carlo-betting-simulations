@@ -16,7 +16,7 @@ def calculate_expected_rate_of_return(user_input):
     '''
     rate_of_return = user_input['win_rate']*user_input['payout_rate'] - \
         user_input['lose_rate']*1
-    return rate_of_return
+    return round(rate_of_return*100, 2)
 
 
 # FIXME: I think this formula is wrong because of payout.
