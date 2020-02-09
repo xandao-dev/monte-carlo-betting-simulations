@@ -50,3 +50,53 @@ def calcule_risk_of_ruin(current_strategy, user_input):
         (1 - (user_input['win_rate']*user_input['payout_rate'] - user_input['lose_rate'])) /
         (1 + (user_input['win_rate']*user_input['payout_rate'] - user_input['lose_rate'])))**units
     return round(risk_of_ruin*100, 2)
+
+
+def calculate_broke_percentage(user_input, broke_count):
+    return round((broke_count / user_input['samples']) * 100, 2)
+
+
+def calculate_profited_percentage(user_input, profitors_count):
+    return round((profitors_count / user_input['samples']) * 100, 2)
+
+
+def calculate_survived_profited_percentage(
+        user_input, broke_count, profitors_count):
+    try:
+        survive_profit_percent = round(
+            (profitors_count / (user_input['samples'] - broke_count)) * 100, 2)
+    except ZeroDivisionError:
+        survive_profit_percent = 0
+    return survive_profit_percent
+
+
+def calculate_final_bankroll_average(user_input, bankroll_histories):
+    final_bankroll_sum = 0
+    for bankroll_history in bankroll_histories:
+        final_bankroll_sum += bankroll_history[-1]
+    final_bankroll_average = round(final_bankroll_sum/user_input['samples'], 2)
+    return final_bankroll_average
+
+
+def calculate_average_profit(profits):
+    try:
+        average_profit = round(sum(profits) / len(profits), 2)
+    except ZeroDivisionError:
+        average_profit = 0
+    return average_profit
+
+
+def calculate_average_loses(loses):
+    try:
+        average_loses = round(sum(loses) / len(loses), 2)
+    except ZeroDivisionError:
+        average_loses = 0
+    return average_loses
+
+
+def calculate_expected_profit(average_profit, profited_percentage):
+    return round(average_profit * (profited_percentage/ 100), 2)
+
+
+def calculate_expected_loss(average_loses, profited_percentage):
+    return round(average_loses * (1 - (profited_percentage / 100)), 2)

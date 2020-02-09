@@ -52,48 +52,39 @@ def print_strategy_stats(
     user_input, bankroll_histories, broke_count, profitors_count,
     profits, loses, title, kelly_percentage=None
 ) -> None:
-
-    broke_percent = round((broke_count / user_input['samples']) * 100, 2)
-    profit_percent = round((profitors_count / user_input['samples']) * 100, 2)
-
-    final_bankroll_sum = 0
-    for bankroll_history in bankroll_histories:
-        final_bankroll_sum += bankroll_history[-1]
-    final_bankroll_average = round(final_bankroll_sum/user_input['samples'], 2)
-
-    try:
-        survive_profit_percent = round(
-            (profitors_count / (user_input['samples'] - broke_count)) * 100, 2)
-    except ZeroDivisionError:
-        survive_profit_percent = 0
-    try:
-        avg_profit = round(sum(profits) / len(profits), 2)
-    except ZeroDivisionError:
-        avg_profit = 0
-    try:
-        avg_loses = round(sum(loses) / len(loses), 2)
-    except ZeroDivisionError:
-        avg_loses = 0
-
     risk_of_ruin = calcule_risk_of_ruin(strategies[0], user_input)
-
+    broke_percentage = calculate_broke_percentage(user_input, broke_count)
+    profited_percentage = calculate_profited_percentage(
+        user_input, profitors_count)
+    survived_profited_percentage = calculate_survived_profited_percentage(
+        user_input, broke_count, profitors_count)
+    final_bankroll_average = calculate_final_bankroll_average(
+        user_input, bankroll_histories)
+    average_profit = calculate_average_profit(profits)
+    average_loses = calculate_average_loses(loses)
+    expected_profit = calculate_expected_profit(
+        average_profit, profited_percentage)
+    expected_loss = calculate_expected_loss(average_loses, profited_percentage)
+    
     print('\n'+'-'*80)
     print(f'*{title.upper()}*')
+
     if kelly_percentage is not None:
         print('Kelly criterion in percentage of capital: ' +
               f'{round(kelly_percentage*100,2)}%\n')
+
     #print(f'Risk of Ruin: {risk_of_ruin}%')
-    print(f'Percentage Broke: {broke_percent}%')
-    print(f'Percentage Profited: {profit_percent}%')
-    print(f'Percentage Survivors Profited: {survive_profit_percent}%\n')
+    print(f'Percentage Broke: {broke_percentage}%')
+    print(f'Percentage Profited: {profited_percentage}%')
+    print(f'Percentage Survivors Profited: {survived_profited_percentage}%\n')
+
     print(
         f'Final Bankroll Average: {user_input["currency"]} {final_bankroll_average}')
-    print(f'Average Profit: {user_input["currency"]} {avg_profit}')
-    print(f'Average Loses: {user_input["currency"]} {avg_loses}\n')
-    print(
-        f'Expected Profit: {user_input["currency"]} {round(avg_profit * (profit_percent/ 100), 2)}')
-    print(
-        f'Expected Loss: {user_input["currency"]} {round(avg_loses * (1 - (profit_percent / 100)), 2)}\n')
+    print(f'Average Profit: {user_input["currency"]} {average_profit}')
+    print(f'Average Loses: {user_input["currency"]} {average_loses}\n')
+
+    print(f'Expected Profit: {user_input["currency"]} {expected_profit}')
+    print(f'Expected Loss: {user_input["currency"]} {expected_loss}')
     print('-'*80)
 
 
