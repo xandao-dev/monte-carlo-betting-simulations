@@ -9,39 +9,43 @@ from betting.statistical_calculations import *
 
 
 def print_indicators_tutorial(language=None):
+    print('\n'+'-'*80)
     if language == 'PORTUGUESE':
-        print('''Expected Rate of Return (Taxa de Retorno Esperada):  Um RoR de 
-3% significa que você tende a ganhar 3% do valor da sua aposta no longo prazo.''')
-        print('''Kelly criterion in percentage of capital (Critério de Kelly em 
-porcentagem de capital): ''')
-        #print('''Risk of Ruin(Risco de Ruína): ''')
-        print('''Percentage Broke (Percentual de Quebra): ''')
-        print('''Percentage Profited (Percentual de Lucro): ''')
-        print('''Percentage Survivors Profited (Percentual de Sobreviventes que 
-        Lucraram): ''')
-        print('''Final Bankroll Average (Média Final da Banca): ''')
-        print('''Average Profit (Média dos Lucros): ''')
-        print('''Average Loses (Média das Perdas): ''')
-        print('''Expected Profit (Lucro Esperado): ''')
+        print('''Expected Rate of Return (Taxa de Retorno Esperada):  Um RoR de 3% significa 
+    que você tende a ganhar 3% do valor da sua aposta no longo prazo.\n''')
+        print('''Kelly criterion in percentage of capital (Critério de Kelly em
+    porcentagem de capital): \n''')
+        #print('''Risk of Ruin(Risco de Ruína): \n''')
+        print('''Percentage Broke (Percentual de Quebra): \n''')
+        print('''Percentage Profited (Percentual de Lucro): \n''')
+        print('''Percentage Survivors Profited (Percentual de Sobreviventes que Lucraram): \n''')
+        print('''Final Bankroll Average (Média Final da Banca): \n''')
+        print('''Average Profit (Média dos Lucros): \n''')
+        print('''Average Loses (Média das Perdas): \n''')
+        print('''Expected Profit (Lucro Esperado): \n''')
         print('''Expected Loss (Perda Esperada): ''')
     else:
-        print('''Expected Rate of Return:  A RoR of 3% means that you tend to win 
-3% of your stake in the long run.''')
-        print('''Kelly criterion in percentage of capital: ''')
-        #print('''Risk of Ruin: ''')
-        print('''Percentage Broke: ''')
-        print('''Percentage Profited: ''')
-        print('''Percentage Survivors Profited: ''')
-        print('''Final Bankroll Average: ''')
-        print('''Average Profit: ''')
-        print('''Average Loses: ''')
-        print('''Expected Profit: ''')
+        print('''Expected Rate of Return:  A RoR of 3% means that you tend to win 3% of your 
+    stake in the long run.\n''')
+        print('''Kelly criterion in percentage of capital: \n''')
+        #print('''Risk of Ruin: \n''')
+        print('''Percentage Broke: \n''')
+        print('''Percentage Profited: \n''')
+        print('''Percentage Survivors Profited: \n''')
+        print('''Final Bankroll Average: \n''')
+        print('''Average Profit: \n''')
+        print('''Average Loses: \n''')
+        print('''Expected Profit: \n''')
         print('''Expected Loss: ''')
+    print('-'*80)
 
 
 def print_general_stats(user_input):
+    print('\n'+'-'*80)
+    print('*GENERAL STATISTICS*')
     rate_of_return = calculate_expected_rate_of_return(user_input)
     print(f'Expected Rate of Return: {rate_of_return}%')
+    print('-'*80)
 
 
 def print_strategy_stats(
@@ -74,7 +78,6 @@ def print_strategy_stats(
     risk_of_ruin = calcule_risk_of_ruin(strategies[0], user_input)
 
     print('\n'+'-'*80)
-    print(user_input['currency'])
     print(f'*{title.upper()}*')
     if kelly_percentage is not None:
         print('Kelly criterion in percentage of capital: ' +
