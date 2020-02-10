@@ -8,11 +8,13 @@ HomelessSandwich/MonteCarloBettingSim is licensed under MIT
 from betting.statistical_calculations import *
 import betting.strategies as strategies
 
+
 def print_indicators_tutorial(language=None):
     print('\n'+'-'*80)
     if language == 'PORTUGUESE':
         print('''Expected Rate of Return (Taxa de Retorno Esperada):  Um RoR de 3% significa 
     que você tende a ganhar 3% do valor da sua aposta no longo prazo.\n''')
+        print('''CDF Average (Média CDF): ''')
         print('''Kelly criterion in percentage of capital (Critério de Kelly em
     porcentagem de capital): \n''')
         #print('''Risk of Ruin(Risco de Ruína): \n''')
@@ -27,6 +29,7 @@ def print_indicators_tutorial(language=None):
     else:
         print('''Expected Rate of Return:  A RoR of 3% means that you tend to win 3% of your 
     stake in the long run.\n''')
+        print('''CDF Average: ''')
         print('''Kelly criterion in percentage of capital: \n''')
         #print('''Risk of Ruin: \n''')
         print('''Percentage Broke: \n''')
@@ -40,11 +43,14 @@ def print_indicators_tutorial(language=None):
     print('-'*80)
 
 
-def print_general_stats(user_input):
+def print_general_stats(bet_results, user_input):
     print('\n'+'-'*80)
     print('*GENERAL STATISTICS*')
     rate_of_return = calculate_expected_rate_of_return(user_input)
+    CDF_average = calculate_CDF_average_from_binomial_distribution(
+        user_input, bet_results)
     print(f'Expected Rate of Return: {rate_of_return}%')
+    print(f'CDF Average: {CDF_average}%')
     print('-'*80)
 
 
@@ -52,7 +58,8 @@ def print_strategy_stats(
     user_input, bankroll_histories, broke_count, profitors_count,
     profits, loses, title, kelly_percentage=None
 ) -> None:
-    risk_of_ruin = calcule_risk_of_ruin(strategies.strategies_list[0], user_input)
+    risk_of_ruin = calcule_risk_of_ruin(
+        strategies.strategies_list[0], user_input)
     broke_percentage = calculate_broke_percentage(user_input, broke_count)
     profited_percentage = calculate_profited_percentage(
         user_input, profitors_count)
@@ -65,7 +72,7 @@ def print_strategy_stats(
     expected_profit = calculate_expected_profit(
         average_profit, profited_percentage)
     expected_loss = calculate_expected_loss(average_loses, profited_percentage)
-    
+
     print('\n'+'-'*80)
     print(f'*{title.upper()}*')
 

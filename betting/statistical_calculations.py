@@ -1,5 +1,5 @@
 import betting.strategies as strategies 
-
+from scipy.stats import binom
 
 def calculate_expected_rate_of_return(user_input):
     '''
@@ -16,6 +16,15 @@ def calculate_expected_rate_of_return(user_input):
     rate_of_return = user_input['win_rate']*user_input['payout_rate'] - \
         user_input['lose_rate']*1
     return round(rate_of_return*100, 2)
+
+
+def calculate_CDF_average_from_binomial_distribution(user_input, bet_results):
+    CDF_sum = 0
+    for sample_result in bet_results:
+        true_results = sum(1 for x in sample_result if x == True)
+        CDF_sum += binom.cdf(true_results, user_input['bet_count'], user_input['win_rate'])
+    CDF_average = CDF_sum/user_input['samples']
+    return round(CDF_average*100,2)
 
 
 # FIXME: I think this formula is wrong because of payout.

@@ -15,10 +15,10 @@ from typing import Union, List
 
 # region USER INPUT
 user_input = {
-    'samples': 500,
+    'samples': 200,
     'bet_count': 1000,
-    'win_rate': 0.5500,  # range: 0.0000-1.0000
-    'lose_rate': 0.4500, # range: 1.0000-0.0000
+    'win_rate': 0.5000,  # range: 0.0000-1.0000
+    'lose_rate': 0.5000, # range: 1.0000-0.0000
     'payout_rate': 0.8700,  # range: 0.0000-2.0000 generally, but you choose
     'initial_bankroll': 1000,
     'currency': '$',
@@ -35,7 +35,7 @@ user_input = {
 
 def main():
     #print_indicators_tutorial('PORTUGUESE')
-    print_general_stats(user_input)
+    print_general_stats(bet_results, user_input)
 
     data = fixed_bettor(bet_results, user_input)
     plt.config(*data)
@@ -60,7 +60,7 @@ def main():
     #                             title='Percentage Anti-Martingale')
     #plt.config(*data)
 
-    #plt.show()# Show Graphs
+    plt.show()# Show Graphs
 
 
 if __name__ == '__main__':
