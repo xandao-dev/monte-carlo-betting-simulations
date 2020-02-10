@@ -14,7 +14,7 @@ def print_indicators_tutorial(language=None):
     if language == 'PORTUGUESE':
         print('''Expected Rate of Return (Taxa de Retorno Esperada):  Um RoR de 3% significa 
     que você tende a ganhar 3% do valor da sua aposta no longo prazo.\n''')
-        print('''CDF Average (Média CDF): ''')
+        print('''CDF Average from Binomial Distribution (Média CDF da Distribuição Binomial): ''')
         print('''Kelly criterion in percentage of capital (Critério de Kelly em
     porcentagem de capital): \n''')
         #print('''Risk of Ruin(Risco de Ruína): \n''')
@@ -29,7 +29,7 @@ def print_indicators_tutorial(language=None):
     else:
         print('''Expected Rate of Return:  A RoR of 3% means that you tend to win 3% of your 
     stake in the long run.\n''')
-        print('''CDF Average: ''')
+        print('''CDF Average from Binomial Distribution: ''')
         print('''Kelly criterion in percentage of capital: \n''')
         #print('''Risk of Ruin: \n''')
         print('''Percentage Broke: \n''')
@@ -50,7 +50,7 @@ def print_general_stats(bet_results, user_input):
     CDF_average = calculate_CDF_average_from_binomial_distribution(
         user_input, bet_results)
     print(f'Expected Rate of Return: {rate_of_return}%')
-    print(f'CDF Average: {CDF_average}%')
+    print(f'CDF Average from Binomial Distribution: {CDF_average}%')
     print('-'*80)
 
 
