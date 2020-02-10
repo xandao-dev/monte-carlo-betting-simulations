@@ -1,5 +1,4 @@
-strategies = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion',
-              'fixed_martingale', 'percentage_martingale']
+import betting.strategies as strategies 
 
 
 def calculate_expected_rate_of_return(user_input):
@@ -40,7 +39,7 @@ def calcule_risk_of_ruin(current_strategy, user_input):
     '''
 
     units = 0
-    if current_strategy == strategies[0]:
+    if current_strategy == strategies.strategies_list[0]:
         if user_input['stoploss'] is None:
             user_input['stoploss'] = 0
         units = (user_input['initial_bankroll'] -

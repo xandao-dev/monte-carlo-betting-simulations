@@ -6,7 +6,7 @@ HomelessSandwich/MonteCarloBettingSim is licensed under MIT
 '''
 
 from betting.statistical_calculations import *
-
+import betting.strategies as strategies
 
 def print_indicators_tutorial(language=None):
     print('\n'+'-'*80)
@@ -52,7 +52,7 @@ def print_strategy_stats(
     user_input, bankroll_histories, broke_count, profitors_count,
     profits, loses, title, kelly_percentage=None
 ) -> None:
-    risk_of_ruin = calcule_risk_of_ruin(strategies[0], user_input)
+    risk_of_ruin = calcule_risk_of_ruin(strategies.strategies_list[0], user_input)
     broke_percentage = calculate_broke_percentage(user_input, broke_count)
     profited_percentage = calculate_profited_percentage(
         user_input, profitors_count)

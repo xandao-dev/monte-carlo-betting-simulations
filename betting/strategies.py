@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 Strategies TODO: dAlembert, fibonacci,
 oscars_grind, patrick, sorogales, soros, whittaker
 """
-strategies = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion', 
+strategies_list = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion', 
               'fixed_martingale', 'percentage_martingale']
 
 
