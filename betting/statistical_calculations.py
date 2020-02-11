@@ -89,6 +89,7 @@ def calculate_ROI_percentage_average(user_input, bankroll_histories):
     return ROI_percentage_average
 
 
+# FIXME: Verify
 def calculate_yield_percentage_average(
         user_input, bankroll_histories, bet_value_histories):
     bet_value_sum = 0
@@ -96,7 +97,8 @@ def calculate_yield_percentage_average(
     for bankroll_history, bet_value_history in zip(
             bankroll_histories, bet_value_histories):
         bet_value_sum = sum(bet_value_history)
-        yield_sum += ((bankroll_history[-1]/bet_value_sum)-1)*100
+        yield_sum += ((bankroll_history[-1] -
+                       user_input['initial_bankroll'])/bet_value_sum)*100
 
     yield_percentage_average = round(yield_sum/user_input['samples'], 2)
     return yield_percentage_average
