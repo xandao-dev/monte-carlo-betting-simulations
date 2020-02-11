@@ -1,5 +1,6 @@
-import betting.strategies as strategies 
+import betting.strategies as strategies
 from scipy.stats import binom
+
 
 def calculate_expected_rate_of_return(user_input):
     '''
@@ -13,18 +14,20 @@ def calculate_expected_rate_of_return(user_input):
 
     A 'ror' of 3% means that you tend to win 3% of your stake in the long run.
     '''
-    rate_of_return = user_input['win_rate']*user_input['payout_rate'] - \
-        user_input['lose_rate']*1
-    return round(rate_of_return*100, 2)
+    rate_of_return = round((user_input['win_rate']*user_input['payout_rate'] -
+                            user_input['lose_rate']*1)*100, 2)  
+                            # *1 because you lose your entire bet
+    return rate_of_return
 
 
 def calculate_CDF_average_from_binomial_distribution(user_input, bet_results):
     CDF_sum = 0
     for sample_result in bet_results:
         true_results = sum(1 for x in sample_result if x == True)
-        CDF_sum += binom.cdf(true_results, user_input['bet_count'], user_input['win_rate'])
-    CDF_average = CDF_sum/user_input['samples']
-    return round(CDF_average*100,2)
+        CDF_sum += binom.cdf(true_results,
+                             user_input['bet_count'], user_input['win_rate'])
+    CDF_average = round((CDF_sum/user_input['samples'])*100, 2)
+    return CDF_average
 
 
 # FIXME: I think this formula is wrong because of payout.
@@ -78,6 +81,14 @@ def calculate_survived_profited_percentage(
     return survive_profit_percent
 
 
+def calculate_ROI_percentage_average(user_input, bankroll_histories):
+    ROI_sum = 0
+    for bankroll_history in bankroll_histories:
+        ROI_sum += (bankroll_history[-1]/user_input['initial_bankroll'])*100
+    ROI_percentage_average = round(ROI_sum/user_input['samples'], 2)
+    return ROI_percentage_average
+
+
 def calculate_final_bankroll_average(user_input, bankroll_histories):
     final_bankroll_sum = 0
     for bankroll_history in bankroll_histories:
@@ -103,7 +114,7 @@ def calculate_average_loses(loses):
 
 
 def calculate_expected_profit(average_profit, profited_percentage):
-    return round(average_profit * (profited_percentage/ 100), 2)
+    return round(average_profit * (profited_percentage / 100), 2)
 
 
 def calculate_expected_loss(average_loses, profited_percentage):
