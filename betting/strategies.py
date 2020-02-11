@@ -28,13 +28,15 @@ def fixed_bettor(
     loses = []
     bet_count_histories = []
     bankroll_histories = []
-
+    bet_value_histories = []
+    
     if bet_value is not None:
         user_input['bet_value'] = bet_value 
     user_input['bet_value'] = bettor.max_min_verify(user_input['bet_value'])
 
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
+        bet_value_history = []
         current_bankroll = user_input['initial_bankroll']
 
         for bet_result in sample_result:
@@ -48,6 +50,7 @@ def fixed_bettor(
                 current_bankroll = bankroll_history[-1]
                 break
             bankroll_history.append(current_bankroll)
+            bet_value_history.append(bet_value)
 
         if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
@@ -62,6 +65,7 @@ def fixed_bettor(
             sg_reached_count += 1
 
         bankroll_histories.append(bankroll_history.copy())
+        bet_value_histories.append(bet_value_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
     print_strategy_stats(
@@ -86,6 +90,7 @@ def percentage_bettor(
     profits = []
     loses = []
     bet_count_histories = []
+    bet_value_histories = []
     bankroll_histories = []
 
     if bet_percentage is None:
@@ -93,6 +98,7 @@ def percentage_bettor(
 
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
+        bet_value_history = []
         current_bankroll = user_input['initial_bankroll']
 
         for bet_result in sample_result:
@@ -109,6 +115,7 @@ def percentage_bettor(
                 current_bankroll = bankroll_history[-1]
                 break
             bankroll_history.append(current_bankroll)
+            bet_value_history.append(bet_value)
 
         if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
@@ -123,8 +130,9 @@ def percentage_bettor(
             sg_reached_count += 1
 
         bankroll_histories.append(bankroll_history.copy())
+        bet_value_histories.append(bet_value_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
-
+    
     print_strategy_stats(
         user_input, bankroll_histories, broke_count,
         profitors_count, profits, loses, title)
@@ -147,6 +155,7 @@ def kelly_criterion(
     profits = []
     loses = []
     bet_count_histories = []
+    bet_value_histories = []
     bankroll_histories = []
 
     kelly_percentage = user_input['win_rate'] - \
@@ -159,6 +168,7 @@ def kelly_criterion(
 
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
+        bet_value_history = []
         current_bankroll = user_input['initial_bankroll']
 
         for bet_result in sample_result:
@@ -175,6 +185,7 @@ def kelly_criterion(
                 current_bankroll = bankroll_history[-1]
                 break
             bankroll_history.append(current_bankroll)
+            bet_value_history.append(bet_value)
 
         if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
@@ -189,6 +200,7 @@ def kelly_criterion(
             sg_reached_count += 1
 
         bankroll_histories.append(bankroll_history.copy())
+        bet_value_histories.append(bet_value_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
     print_strategy_stats(
@@ -217,6 +229,7 @@ def fixed_martingale(
     profits = []
     loses = []
     bet_count_histories = []
+    bet_value_histories = []
     bankroll_histories = []
 
     if bet_value is None:
@@ -226,6 +239,7 @@ def fixed_martingale(
 
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
+        bet_value_history = []
         current_bankroll = user_input['initial_bankroll']
 
         for i, bet_result in enumerate(sample_result):
@@ -256,6 +270,7 @@ def fixed_martingale(
                 current_bankroll = bankroll_history[-1]
                 break
             bankroll_history.append(current_bankroll)
+            bet_value_history.append(bet_value)
 
         if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
@@ -270,6 +285,7 @@ def fixed_martingale(
             sg_reached_count += 1
 
         bankroll_histories.append(bankroll_history.copy())
+        bet_value_histories.append(bet_value_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
     print_strategy_stats(
@@ -299,6 +315,7 @@ def percentage_martingale(
     profits = []
     loses = []
     bet_count_histories = []
+    bet_value_histories = []
     bankroll_histories = []
 
     if bet_percentage is None:
@@ -314,6 +331,7 @@ def percentage_martingale(
 
     for sample_result in bet_results:
         bankroll_history = [user_input['initial_bankroll']]
+        bet_value_history = []
         current_bankroll = user_input['initial_bankroll']
 
         for i, bet_result in enumerate(sample_result):
@@ -346,6 +364,7 @@ def percentage_martingale(
                 current_bankroll = bankroll_history[-1]
                 break
             bankroll_history.append(current_bankroll)
+            bet_value_history.append(bet_value)
 
         if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
@@ -360,6 +379,7 @@ def percentage_martingale(
             sg_reached_count += 1
 
         bankroll_histories.append(bankroll_history.copy())
+        bet_value_histories.append(bet_value_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
     if not use_kelly_percentage:
