@@ -50,7 +50,7 @@ def fixed_bettor(
                 current_bankroll = bankroll_history[-1]
                 break
             bankroll_history.append(current_bankroll)
-            bet_value_history.append(bet_value)
+            bet_value_history.append(user_input['bet_value'])
 
         if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
             profitors_count += 1
