@@ -57,8 +57,8 @@ def print_general_stats(bet_results, user_input):
 
 
 def print_strategy_stats(
-    user_input, bankroll_histories, broke_count, profitors_count,
-    profits, loses, title, kelly_percentage=None
+    user_input, bankroll_histories, bet_value_histories, broke_count, 
+    profitors_count, profits, loses, title, kelly_percentage=None
 ) -> None:
     risk_of_ruin = calcule_risk_of_ruin(
         strategies.strategies_list[0], user_input)
