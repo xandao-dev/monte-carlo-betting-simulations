@@ -69,7 +69,8 @@ def print_strategy_stats(
         user_input, broke_count, profitors_count)
     final_bankroll_average = calculate_final_bankroll_average(
         user_input, bankroll_histories)
-    ROI_average = calculate_ROI_average(user_input, bankroll_histories)
+    ROI_percentage_average = calculate_ROI_percentage_average(
+        user_input, bankroll_histories)
     average_profit = calculate_average_profit(profits)
     average_loses = calculate_average_loses(loses)
     expected_profit = calculate_expected_profit(
@@ -86,11 +87,10 @@ def print_strategy_stats(
     #print(f'Risk of Ruin: {risk_of_ruin}%')
     print(f'Percentage Broke: {broke_percentage}%')
     print(f'Percentage Profited: {profited_percentage}%')
-    print(f'Percentage Survivors Profited: {survived_profited_percentage}%\n')
-
+    print(f'Percentage Survivors Profited: {survived_profited_percentage}%')
+    print(f'ROI Average: {ROI_percentage_average}%\n)
     print(
         f'Final Bankroll Average: {user_input["currency"]} {final_bankroll_average}')
-    print(f'ROI Average: {user_input["currency"]} {ROI_average}')
     print(f'Average Profit: {user_input["currency"]} {average_profit}')
     print(f'Average Loses: {user_input["currency"]} {average_loses}\n')
 
