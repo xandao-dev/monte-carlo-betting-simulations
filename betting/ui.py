@@ -88,7 +88,7 @@ def print_strategy_stats(
     print(f'Percentage Broke: {broke_percentage}%')
     print(f'Percentage Profited: {profited_percentage}%')
     print(f'Percentage Survivors Profited: {survived_profited_percentage}%')
-    print(f'ROI Average: {ROI_percentage_average}%\n')
+    print(f'ROI Percentage Average: {ROI_percentage_average}%\n')
     print(
         f'Final Bankroll Average: {user_input["currency"]} {final_bankroll_average}')
     print(f'Average Profit: {user_input["currency"]} {average_profit}')
