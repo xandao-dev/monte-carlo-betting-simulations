@@ -22,6 +22,7 @@ def print_indicators_tutorial(language=None):
         print('''Percentage Profited (Percentual de Lucro): \n''')
         print('''Percentage Survivors Profited (Percentual de Sobreviventes que Lucraram): \n''')
         print('''ROI Percentage Average (Média do Retorno Sobre Investimento em porcentagem): \n''')
+        print('''Yield Percentage Average (Porcentagem Média Média): \n''')
         print('''Final Bankroll Average (Média Final da Banca): \n''')
         print('''Average Profit (Média dos Lucros): \n''')
         print('''Average Loses (Média das Perdas): \n''')
@@ -37,6 +38,7 @@ def print_indicators_tutorial(language=None):
         print('''Percentage Profited: \n''')
         print('''Percentage Survivors Profited: \n''')
         print('''ROI Percentage Average (Return On Investment Percentage Average): \n''')
+        print('''Yield Percentage Average: \n''')
         print('''Final Bankroll Average: \n''')
         print('''Average Profit: \n''')
         print('''Average Loses: \n''')
@@ -57,7 +59,7 @@ def print_general_stats(bet_results, user_input):
 
 
 def print_strategy_stats(
-    user_input, bankroll_histories, bet_value_histories, broke_count, 
+    user_input, bankroll_histories, bet_value_histories, broke_count,
     profitors_count, profits, loses, title, kelly_percentage=None
 ) -> None:
     risk_of_ruin = calcule_risk_of_ruin(
@@ -71,6 +73,8 @@ def print_strategy_stats(
         user_input, bankroll_histories)
     ROI_percentage_average = calculate_ROI_percentage_average(
         user_input, bankroll_histories)
+    yield_percentage_average = calculate_yield_percentage_average(
+        user_input, bankroll_histories, bet_value_histories)
     average_profit = calculate_average_profit(profits)
     average_loses = calculate_average_loses(loses)
     expected_profit = calculate_expected_profit(
@@ -88,7 +92,8 @@ def print_strategy_stats(
     print(f'Percentage Broke: {broke_percentage}%')
     print(f'Percentage Profited: {profited_percentage}%')
     print(f'Percentage Survivors Profited: {survived_profited_percentage}%')
-    print(f'ROI Percentage Average: {ROI_percentage_average}%\n')
+    print(f'ROI Percentage Average: {ROI_percentage_average}%')
+    print(f'Yield Percentage Average: {yield_percentage_average}%\n')
     print(
         f'Final Bankroll Average: {user_input["currency"]} {final_bankroll_average}')
     print(f'Average Profit: {user_input["currency"]} {average_profit}')

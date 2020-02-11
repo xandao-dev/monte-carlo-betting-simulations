@@ -15,8 +15,8 @@ def calculate_expected_rate_of_return(user_input):
     A 'ror' of 3% means that you tend to win 3% of your stake in the long run.
     '''
     rate_of_return = round((user_input['win_rate']*user_input['payout_rate'] -
-                            user_input['lose_rate']*1)*100, 2)  
-                            # *1 because you lose your entire bet
+                            user_input['lose_rate']*1)*100, 2)
+    # *1 because you lose your entire bet
     return rate_of_return
 
 
@@ -87,6 +87,19 @@ def calculate_ROI_percentage_average(user_input, bankroll_histories):
         ROI_sum += (bankroll_history[-1]/user_input['initial_bankroll'])*100
     ROI_percentage_average = round(ROI_sum/user_input['samples'], 2)
     return ROI_percentage_average
+
+
+def calculate_yield_percentage_average(
+        user_input, bankroll_histories, bet_value_histories):
+    bet_value_sum = 0
+    yield_sum = 0
+    for bankroll_history, bet_value_history in zip(
+            bankroll_histories, bet_value_histories):
+        bet_value_sum = sum(bet_value_history)
+        yield_sum += ((bankroll_history[-1]/bet_value_sum)-1)*100
+
+    yield_percentage_average = round(yield_sum/user_input['samples'], 2)
+    return yield_percentage_average
 
 
 def calculate_final_bankroll_average(user_input, bankroll_histories):

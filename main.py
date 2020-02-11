@@ -17,8 +17,8 @@ from typing import Union, List
 user_input = {
     'samples': 200,
     'bet_count': 1000,
-    'win_rate': 0.5000,  # range: 0.0000-1.0000
-    'lose_rate': 0.5000, # range: 1.0000-0.0000
+    'win_rate': 0.5500,  # range: 0.0000-1.0000
+    'lose_rate': 0.4500, # range: 1.0000-0.0000
     'payout_rate': 0.8700,  # range: 0.0000-2.0000 generally, but you choose
     'initial_bankroll': 1000,
     'currency': '$',
@@ -43,8 +43,8 @@ def main():
     #data = percentage_bettor(bet_results, user_input)
     #plt.config(*data)
 
-    #data = kelly_criterion(bet_results, user_input)
-    #plt.config(*data)
+    data = kelly_criterion(bet_results, user_input)
+    plt.config(*data)
 
     #data = fixed_martingale(bet_results, user_input)
     #plt.config(*data)
