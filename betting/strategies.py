@@ -70,7 +70,7 @@ def fixed_bettor(
 
     print_strategy_stats(
         user_input, bankroll_histories, bet_value_histories, broke_count,
-        profitors_count, profits, loses, title)
+        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
     return bet_count_histories, bankroll_histories, title
 
 
@@ -135,7 +135,7 @@ def percentage_bettor(
     
     print_strategy_stats(
         user_input, bankroll_histories, bet_value_histories, broke_count,
-        profitors_count, profits, loses, title)
+        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
     return bet_count_histories, bankroll_histories, title
 
 
@@ -205,7 +205,7 @@ def kelly_criterion(
 
     print_strategy_stats(
         user_input, bankroll_histories, bet_value_histories, broke_count,
-        profitors_count, profits, loses, title, kelly_percentage)
+        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title, kelly_percentage)
     return bet_count_histories, bankroll_histories, title
 
 
@@ -290,7 +290,7 @@ def fixed_martingale(
 
     print_strategy_stats(
         user_input, bankroll_histories, bet_value_histories, broke_count,
-        profitors_count, profits, loses, title)
+        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
     return bet_count_histories, bankroll_histories, title
 
 
@@ -385,10 +385,10 @@ def percentage_martingale(
     if not use_kelly_percentage:
         print_strategy_stats(
             user_input, bankroll_histories, bet_value_histories, broke_count,
-            profitors_count, profits, loses, title)
+            sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
     else:
         print_strategy_stats(
             user_input, bankroll_histories, bet_value_histories, broke_count,
-            profitors_count, profits, loses, title,
-            kelly_percentage=bet_percentage)
+            sl_reached_count, sg_reached_count, profitors_count, profits, loses,
+            title, kelly_percentage=bet_percentage)
     return bet_count_histories, bankroll_histories, title

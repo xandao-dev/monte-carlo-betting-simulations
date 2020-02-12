@@ -62,7 +62,8 @@ def print_general_stats(bet_results, user_input):
 
 def print_strategy_stats(
     user_input, bankroll_histories, bet_value_histories, broke_count,
-    profitors_count, profits, loses, title, kelly_percentage=None
+    sl_reached_count, sg_reached_count, profitors_count, profits, loses, title, 
+    kelly_percentage=None
 ) -> None:
     risk_of_ruin = calcule_risk_of_ruin(
         strategies.strategies_list[0], user_input)
@@ -107,20 +108,17 @@ def print_strategy_stats(
     print(f'ROI Percentage Average: {ROI_percentage_average}%')
     print(f'Yield Percentage Average: {yield_percentage_average}%\n')
 
-    print(f'Average of Number of Bets: {average_of_number_of_bets} bets\n')
-
     print(
         f'Final Bankroll Average: {user_input["currency"]} {final_bankroll_average}')
     print(f'Average Profit: {user_input["currency"]} {average_profit}')
     print(f'Average Loses: {user_input["currency"]} {average_loses}\n')
 
     print(f'Expected Profit: {user_input["currency"]} {expected_profit}')
-    print(f'Expected Loss: {user_input["currency"]} {expected_loss}')
+    print(f'Expected Loss: {user_input["currency"]} {expected_loss}\n')
+
+    print(f'Average of Number of Bets: {average_of_number_of_bets} bets')
+    if user_input['stoploss'] is not None:
+        print(f'{sl_reached_count} stoploss reached of {user_input["samples"]}')
+    if user_input['stopgain'] is not None:
+        print(f'{sg_reached_count} stopgain reached of {user_input["samples"]}')
     print('-'*120)
-
-
-'''
-    print(f'{bust_count} broken of {samples}!')
-    print(f'{sl_reached_count} stoploss reached of {samples})
-    print(f'{sg_reached_count} stopgain reached of {samples} \n')
-'''
