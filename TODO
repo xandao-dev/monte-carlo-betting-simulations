@@ -1,0 +1,20 @@
+1 - Plot strategy bankroll average in the same graph with a big width (PlotGraph.py)
+2 - Plot bankroll histogram (PlotGraph.py)
+3 - Plot histogram from where bankroll broke (PlotGraph.py)
+4 - Color with new_fig does nothing (main.py)
+5 - Plot other indicators like boillinger bands (PlotGraph.py)
+6 - Refactore Bettor (Bettor.py)
+7 - Create a template for strategies (strategies.py)
+8 - 
+9 - 
+10 - 
+11 - 
+12 - 
+13 - 
+14 - 
+15 - 
+16 - 
+17 - 
+18 - Create new strategies
+19 - Save results in a csv or txt file (ui.py and exportData.py[NEW File])
+20 - Save results in memory or read from file and return the best strategy (?)
