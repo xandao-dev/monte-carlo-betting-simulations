@@ -52,10 +52,11 @@ def calcule_risk_of_ruin(current_strategy, user_input):
 
     units = 0
     if current_strategy == strategies.strategies_list[0]:
-        if user_input['stoploss'] is None:
-            user_input['stoploss'] = 0
-        units = (user_input['initial_bankroll'] -
-                 user_input['stoploss'])/user_input['bet_value']
+        try:
+            units = (user_input['initial_bankroll'] -
+                     user_input['stoploss'])/user_input['bet_value']
+        except TypeError:
+            units = user_input['initial_bankroll']/user_input['bet_value']
 
     risk_of_ruin = (
         (1 - (user_input['win_rate']*user_input['payout_rate'] - user_input['lose_rate'])) /
