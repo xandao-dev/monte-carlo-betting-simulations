@@ -81,6 +81,17 @@ def calculate_survived_profited_percentage(
     return survive_profit_percent
 
 
+def calculate_survived_NO_profited_percentage(
+        user_input, broke_count, profitors_count):
+    try:
+        survive_NO_profit_percent = round(
+            ((((user_input['samples'] - broke_count)) - profitors_count) /
+                (user_input['samples'] - broke_count)) * 100, 2)
+    except ZeroDivisionError:
+        survive_NO_profit_percent = 0
+    return survive_NO_profit_percent
+
+
 def calculate_ROI_percentage_average(user_input, bankroll_histories):
     ROI_sum = 0
     for bankroll_history in bankroll_histories:
@@ -102,6 +113,14 @@ def calculate_yield_percentage_average(
 
     yield_percentage_average = round(yield_sum/user_input['samples'], 2)
     return yield_percentage_average
+
+
+def calculate_average_of_number_of_bets(user_input, bet_value_histories):
+    number_of_bets = 0
+    for bet_value_history in bet_value_histories:
+        number_of_bets += len(bet_value_history)
+    average_of_number_of_bets = int(number_of_bets/user_input['samples'])
+    return average_of_number_of_bets
 
 
 def calculate_final_bankroll_average(user_input, bankroll_histories):

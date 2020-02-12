@@ -10,7 +10,7 @@ import betting.strategies as strategies
 
 
 def print_indicators_tutorial(language=None):
-    print('\n'+'-'*80)
+    print('\n'+'-'*120)
     if language == 'PORTUGUESE':
         print('''Expected Rate of Return (Taxa de Retorno Esperada):  Um RoR de 3% significa 
     que você tende a ganhar 3% do valor da sua aposta no longo prazo.\n''')
@@ -20,7 +20,8 @@ def print_indicators_tutorial(language=None):
         #print('''Risk of Ruin(Risco de Ruína): \n''')
         print('''Percentage Broke (Percentual de Quebra): \n''')
         print('''Percentage Profited (Percentual de Lucro): \n''')
-        print('''Percentage Survivors Profited (Percentual de Sobreviventes que Lucraram): \n''')
+        print('''Percentage Survivors Who Profited (Percentual de Sobreviventes que Lucraram): \n''')
+        print('''Percentage Survivors Who NOT Profited (Percentual de Sobreviventes que NÃO Lucraram): \n''')
         print('''ROI Percentage Average (Média do Retorno Sobre Investimento em porcentagem): \n''')
         print('''Yield Percentage Average (Porcentagem Média Média): \n''')
         print('''Final Bankroll Average (Média Final da Banca): \n''')
@@ -36,7 +37,8 @@ def print_indicators_tutorial(language=None):
         #print('''Risk of Ruin: \n''')
         print('''Percentage Broke: \n''')
         print('''Percentage Profited: \n''')
-        print('''Percentage Survivors Profited: \n''')
+        print('''Percentage Survivors Who Profited: \n''')
+        print('''Percentage Survivors Who NOT Profited: \n''')
         print('''ROI Percentage Average (Return On Investment Percentage Average): \n''')
         print('''Yield Percentage Average: \n''')
         print('''Final Bankroll Average: \n''')
@@ -44,18 +46,18 @@ def print_indicators_tutorial(language=None):
         print('''Average Loses: \n''')
         print('''Expected Profit: \n''')
         print('''Expected Loss: ''')
-    print('-'*80)
+    print('-'*120)
 
 
 def print_general_stats(bet_results, user_input):
-    print('\n'+'-'*80)
+    print('\n'+'-'*120)
     print('*GENERAL STATISTICS*')
     rate_of_return = calculate_expected_rate_of_return(user_input)
     CDF_average = calculate_CDF_average_from_binomial_distribution(
         user_input, bet_results)
     print(f'Expected Rate of Return: {rate_of_return}%')
     #print(f'CDF Average from Binomial Distribution: {CDF_average}%')
-    print('-'*80)
+    print('-'*120)
 
 
 def print_strategy_stats(
@@ -69,19 +71,23 @@ def print_strategy_stats(
         user_input, profitors_count)
     survived_profited_percentage = calculate_survived_profited_percentage(
         user_input, broke_count, profitors_count)
-    final_bankroll_average = calculate_final_bankroll_average(
-        user_input, bankroll_histories)
+    survived_NO_profited_percentage = calculate_survived_NO_profited_percentage(
+        user_input, broke_count, profitors_count)
     ROI_percentage_average = calculate_ROI_percentage_average(
         user_input, bankroll_histories)
     yield_percentage_average = calculate_yield_percentage_average(
         user_input, bankroll_histories, bet_value_histories)
+    average_of_number_of_bets = calculate_average_of_number_of_bets(
+        user_input, bet_value_histories)
+    final_bankroll_average = calculate_final_bankroll_average(
+        user_input, bankroll_histories)
     average_profit = calculate_average_profit(profits)
     average_loses = calculate_average_loses(loses)
     expected_profit = calculate_expected_profit(
         average_profit, profited_percentage)
     expected_loss = calculate_expected_loss(average_loses, profited_percentage)
 
-    print('\n'+'-'*80)
+    print('\n'+'-'*120)
     print(f'*{title.upper()}*')
 
     if kelly_percentage is not None:
@@ -89,11 +95,20 @@ def print_strategy_stats(
               f'{round(kelly_percentage*100,2)}%\n')
 
     #print(f'Risk of Ruin: {risk_of_ruin}%')
-    print(f'Percentage Broke: {broke_percentage}%')
-    print(f'Percentage Profited: {profited_percentage}%')
-    print(f'Percentage Survivors Profited: {survived_profited_percentage}%')
+    print(
+        f'Percentage Broke: {broke_percentage}% ({broke_count} of {user_input["samples"]})')
+    print(
+        f'Percentage Profited: {profited_percentage}% ({profitors_count} of {user_input["samples"]})')
+    print(
+        f'Percentage Survivors Who Profited: {survived_profited_percentage}% ({profitors_count} of {user_input["samples"] - broke_count})')
+    print(
+        f'Percentage Survivors Who NOT Profited: {survived_NO_profited_percentage}% ({(user_input["samples"] - broke_count) - profitors_count} of {user_input["samples"] - broke_count})\n')
+
     print(f'ROI Percentage Average: {ROI_percentage_average}%')
     print(f'Yield Percentage Average: {yield_percentage_average}%\n')
+
+    print(f'Average of Number of Bets: {average_of_number_of_bets} bets\n')
+
     print(
         f'Final Bankroll Average: {user_input["currency"]} {final_bankroll_average}')
     print(f'Average Profit: {user_input["currency"]} {average_profit}')
@@ -101,31 +116,11 @@ def print_strategy_stats(
 
     print(f'Expected Profit: {user_input["currency"]} {expected_profit}')
     print(f'Expected Loss: {user_input["currency"]} {expected_loss}')
-    print('-'*80)
+    print('-'*120)
 
 
 '''
-    print 'number_of_player_win: %s, Percentage: %f %%' % (str(number_of_player_win), float(number_of_player_win/number_of_hand)*100)
-    print 'number_of_banker_win: %s, Percentage: %f %%' % (str(number_of_banker_win), float(number_of_banker_win/number_of_hand)*100)
-    print 'number_of_tie: %s, Percentage: %f %%' % (str(number_of_tie), float(number_of_tie/number_of_hand)*100)
-    print 'number_of_hand: %s' % str(number_of_hand)
-    print 'bet: %s' % str(bet)
-    print 'start_bankroll: %s' % str(start_bankroll)
-    print 'final_bankroll: %s' % str(bankroll)
-    print 'number_of_bet: %s' % str(number_of_bet)
-    print 'Total_bet_value： %s' % str(number_of_bet*bet)
-    print 'House edge： %s' % str(number_of_bet*bet*0.0106)
-    print 'Real Loss： %s' % str(float(start_bankroll-bankroll))
-    print 'i_bet_number_of_banker_win: %s' % str(i_bet_number_of_banker_win) 
-    print 'i_bet_number_of_player_win: %s' % str(i_bet_number_of_player_win) 
-    print 'number_of_win: %s' % str(number_of_win)
-    print 'number_of_push: %s' % str(number_of_push) 
-    print 'number_of_total_loss: %s' % str(number_of_total_loss)
-'''
-
-
-'''
-    print(f'{bust_count} broken of {samples} samples in Fixed Sys.!')
-    print(f'{sl_reached_count} stoploss reached of {samples} in Fixed Sys.!')
-    print(f'{sg_reached_count} stopgain reached of {samples} in Fixed Sys.!\n')
+    print(f'{bust_count} broken of {samples}!')
+    print(f'{sl_reached_count} stoploss reached of {samples})
+    print(f'{sg_reached_count} stopgain reached of {samples} \n')
 '''
