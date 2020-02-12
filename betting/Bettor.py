@@ -78,7 +78,8 @@ class Bettor:
             current_bankroll -= bet_value
         return current_bankroll
 
-    def get_bet_count_histories(self, bankroll_histories):
+    @staticmethod
+    def get_bet_count_histories(bankroll_histories):
         bet_count_histories = []
         for index, bankroll_history in enumerate(bankroll_histories):
             bet_count_histories.append(
