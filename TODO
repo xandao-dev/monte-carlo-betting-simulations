@@ -1,4 +1,4 @@
-1 - Plot strategy bankroll average in the same graph with a big width (PlotGraph.py)
+1 - Plot strategy bankroll average in the same graph with a big width (PlotGraph.py) -> WORKING ON IT
 2 - Plot bankroll histogram (PlotGraph.py)
 3 - Plot histogram from where bankroll broke (PlotGraph.py)
 4 - Color with new_fig does nothing (main.py)
@@ -7,7 +7,7 @@
 7 - Create a template for strategies (strategies.py)
 8 - Finish the tutorial printer (ui.py)
 9 - Write a nice README
-10 - 
+10 - Update and add methods and functions description
 11 - 
 12 - 
 13 - 
