@@ -15,12 +15,12 @@ from typing import Union, List
 
 # region USER INPUT
 user_input = {
-    'samples': 200,
-    'bet_count': 1000,
+    'samples': 250,
+    'bet_count': 2500,
     'win_rate': 0.5500,  # range: 0.0000-1.0000
     'lose_rate': 0.4500, # range: 1.0000-0.0000
-    'payout_rate': 0.8700,  # range: 0.0000-2.0000 generally, but you choose
-    'initial_bankroll': 1000,
+    'payout_rate': 0.9000,  # range: 0.0000-2.0000 generally, but you choose
+    'initial_bankroll': 10000,
     'currency': '$',
     'minimum_bet_value': None,
     'maximum_bet_value': None,
@@ -38,32 +38,32 @@ def main():
     print_general_stats(bet_results, user_input)
 
     data = fixed_bettor(bet_results, user_input)
-    plt.config(*data)
+    plt.config(*data, user_input)
 
     #data = percentage_bettor(bet_results, user_input)
-    #plt.config(*data)
+    #plt.config(*data, user_input)
 
     data = kelly_criterion(bet_results, user_input)
-    plt.config(*data)
+    plt.config(*data, user_input)
 
     #data = fixed_martingale(bet_results, user_input)
-    #plt.config(*data)
+    #plt.config(*data, user_input)
 
     #data = fixed_martingale(bet_results, user_input, inverted=True,
     #                        title='Fixed Anti-Martingale')
-    #plt.config(*data)
+    #plt.config(*data, user_input)
 
     #data = percentage_martingale(bet_results, user_input)
-    #plt.config(*data)
+    #plt.config(*data, user_input)
 
     #data = percentage_martingale(bet_results, user_input, inverted=True,
     #                             title='Percentage Anti-Martingale')
-    #plt.config(*data)
+    #plt.config(*data, user_input)
 
     plt.show()# Show Graphs
 
 
 if __name__ == '__main__':
     bet_results = Bettor.generate_random_bet_results(user_input)
-    plt = PlotGraph(user_input['initial_bankroll'])
+    plt = PlotGraph(user_input)
     main()
