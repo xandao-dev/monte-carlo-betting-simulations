@@ -13,14 +13,13 @@ class PlotGraph:
             bet_count_histories: List[List[int]],
             bankroll_histories: List[List[Union[int, float]]],
             title: str,
-            plot_bankroll_average: bool = True
     ) -> None:
         plt.figure()
         [plt.plot(x, y, linewidth=0.8)
          for x, y in zip(bet_count_histories, bankroll_histories)]
         plt.title(title)
 
-        if plot_bankroll_average:
+        if self.user_input['samples'] > 1:
             self.__config_bankroll_average(bankroll_histories)
 
         plt.ylabel('Bankroll')
