@@ -2,7 +2,7 @@ from typing import Union, Tuple, List
 from betting.Bettor import Bettor
 #from betting.ui import print_strategy_stats
 from betting.PlotGraph import PlotGraph
-from betting.ui import Stats
+from betting.UI import Stats
 from betting.statistical_calculations import *
 """
 Strategies TODO: dAlembert, fibonacci,
@@ -30,6 +30,7 @@ class Strategies():
 
         self.graph: PlotGraph = PlotGraph(self.user_input)
         self.bettor: Bettor = Bettor(self.user_input)
+
 
 class FixedBettor(Strategies, Stats):
     def __init__(
@@ -84,7 +85,10 @@ class FixedBettor(Strategies, Stats):
         bet_count_histories = self.bettor.get_bet_count_histories(
             self.bankroll_histories)
 
-        # print_strategy_stats(self.strategies_var)
+        Stats(self.bet_results, self.user_input, self.bankroll_histories,
+              self.bet_value_histories, self.sl_reached_count, self.sg_reached_count,
+              self.broke_count, self.profitors_count, self.profits, self.loses, self.title
+              ).print_strategy_stats()
 
         self.graph.config(bet_count_histories,
                           self.bankroll_histories, self.title)

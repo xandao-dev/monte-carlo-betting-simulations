@@ -1,11 +1,12 @@
 import betting.strategies as strategies
 from betting.statistical_calculations import *
 
+
 class Stats():
     def __init__(
-            self, bet_results, user_input, bankroll_histories,
-            bet_value_histories, sl_reached_count, sg_reached_count,
-            broke_count, profitors_count, profits, loses, title):
+            self, bet_results=None, user_input=None, bankroll_histories=None,
+            bet_value_histories=None, sl_reached_count=None, sg_reached_count=None,
+            broke_count=None, profitors_count=None, profits=None, loses=None, title=None):
         self.bet_results = bet_results
         self.user_input = user_input
         self.bankroll_histories = bankroll_histories
@@ -29,9 +30,12 @@ class Stats():
             #print('''Risk of Ruin(Risco de Ruína): \n''')
             print('''Percentage Broke (Percentual de Quebra): \n''')
             print('''Percentage Profited (Percentual de Lucro): \n''')
-            print('''Percentage Survivors Who Profited (Percentual de Sobreviventes que Lucraram): \n''')
-            print('''Percentage Survivors Who NOT Profited (Percentual de Sobreviventes que NÃO Lucraram): \n''')
-            print('''ROI Percentage Average (Média do Retorno Sobre Investimento em porcentagem): \n''')
+            print(
+                '''Percentage Survivors Who Profited (Percentual de Sobreviventes que Lucraram): \n''')
+            print(
+                '''Percentage Survivors Who NOT Profited (Percentual de Sobreviventes que NÃO Lucraram): \n''')
+            print(
+                '''ROI Percentage Average (Média do Retorno Sobre Investimento em porcentagem): \n''')
             print('''Yield Percentage Average (Porcentagem Média Média): \n''')
             print('''Final Bankroll Average (Média Final da Banca): \n''')
             print('''Average Profit (Média dos Lucros): \n''')
@@ -48,7 +52,8 @@ class Stats():
             print('''Percentage Profited: \n''')
             print('''Percentage Survivors Who Profited: \n''')
             print('''Percentage Survivors Who NOT Profited: \n''')
-            print('''ROI Percentage Average (Return On Investment Percentage Average): \n''')
+            print(
+                '''ROI Percentage Average (Return On Investment Percentage Average): \n''')
             print('''Yield Percentage Average: \n''')
             print('''Final Bankroll Average: \n''')
             print('''Average Profit: \n''')
@@ -57,13 +62,14 @@ class Stats():
             print('''Expected Loss: ''')
         print('-'*120)
 
-    def get_calculations(self):
+    def __get_general_calculations(self):
         '''General Stats'''
-        self.rate_of_return = calculate_expected_rate_of_return(self.user_input)
-        #self.CDF_average = calculate_CDF_average_from_binomial_distribution(
+        self.rate_of_return = calculate_expected_rate_of_return(
+            self.user_input)
+        # self.CDF_average = calculate_CDF_average_from_binomial_distribution(
         #    self.user_input, self.bet_results)
 
-        '''Strategy Stats'''
+    def __get_strategy_calculations(self):
         # risk_of_ruin = calcule_risk_of_ruin(
         #    strategies.strategies_list[0], user_input)
         self.broke_percentage = calculate_broke_percentage(
@@ -90,6 +96,7 @@ class Stats():
             self.average_loses, self.profited_percentage)
 
     def print_general_stats(self):
+        self.__get_general_calculations()
         print('\n'+'-'*120)
         print('*GENERAL STATISTICS*')
         print(f'Expected Rate of Return: {self.rate_of_return}%')
@@ -97,6 +104,7 @@ class Stats():
         print('-'*120)
 
     def print_strategy_stats(self, kelly_percentage=None) -> None:
+        self.__get_strategy_calculations()
         print('\n'+'-'*120)
         print(f'*{self.title.upper()}*')
 

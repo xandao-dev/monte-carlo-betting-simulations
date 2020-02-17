@@ -28,8 +28,8 @@ user_input = {
 
 
 def main():
-    # print_indicators_tutorial('PORTUGUESE')
-    print_general_stats(bet_results, user_input)
+    #Stats().print_indicators_tutorial('PORTUGUESE')
+    Stats(bet_results=bet_results, user_input=user_input).print_general_stats()
 
     FixedBettor(bet_results, user_input).simulate().show()
     #fixed_bettor(bet_results, user_input).show()
