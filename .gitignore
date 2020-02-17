@@ -4,3 +4,4 @@ Others
 .ipynb_checkpoints
 __pycache__
 future_use_code.py
+.venv
