@@ -1,77 +1,94 @@
 from typing import Union, Tuple, List
 from betting.Bettor import Bettor
-from betting.ui import print_strategy_stats
-import matplotlib.pyplot as plt
-
+#from betting.ui import print_strategy_stats
+from betting.PlotGraph import PlotGraph
+from betting.ui import Stats
+from betting.statistical_calculations import *
 """
 Strategies TODO: dAlembert, fibonacci,
 oscars_grind, patrick, sorogales, soros, whittaker
 """
-strategies_list = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion', 
-              'fixed_martingale', 'percentage_martingale']
+strategies_list = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion',
+                   'fixed_martingale', 'percentage_martingale']
 
 
-def fixed_bettor(
-    bet_results,
-    user_input,
-    title='Fixed Bettor',
-    bet_value=None
-) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
-    bettor = Bettor(user_input)
+class Strategies():
+    def __init__(self, bet_results: List[List[bool]], user_input: dict, title: str):
+        self.bet_results: List[List[bool]] = bet_results
+        self.user_input: dict = user_input
+        self.title: str = title
 
-    sl_reached_count = 0
-    sg_reached_count = 0
-    broke_count = 0
-    profitors_count = 0
+        self.sl_reached_count: int = 0
+        self.sg_reached_count: int = 0
+        self.broke_count: int = 0
+        self.profitors_count: int = 0
+        self.profits: List[Union[int, float]] = []
+        self.loses: List[Union[int, float]] = []
+        self.bet_count_histories: List[List[int]] = []
+        self.bankroll_histories: List[List[Union[int, float]]] = []
+        self.bet_value_histories: List[List[Union[int, float]]] = []
 
-    profits = []
-    loses = []
-    bet_count_histories = []
-    bankroll_histories = []
-    bet_value_histories = []
-    
-    if bet_value is not None:
-        user_input['bet_value'] = bet_value 
-    user_input['bet_value'] = bettor.max_min_verify(user_input['bet_value'])
+        self.graph: PlotGraph = PlotGraph(self.user_input)
+        self.bettor: Bettor = Bettor(self.user_input)
 
-    for sample_result in bet_results:
-        bankroll_history = [user_input['initial_bankroll']]
-        bet_value_history = []
-        current_bankroll = user_input['initial_bankroll']
+class FixedBettor(Strategies, Stats):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Fixed Bettor',
+            bet_value: Union[int, float, None] = None):
+        super().__init__(bet_results, user_input, title)
+        self.bet_value = bet_value
 
-        for bet_result in sample_result:
-            current_bankroll = bettor.bet(
-                bet_result, user_input['bet_value'], current_bankroll)
+    def simulate(self):
+        if self.bet_value is not None:
+            self.user_input['bet_value'] = self.bet_value
+        self.user_input['bet_value'] = self.bettor.max_min_verify(
+            self.user_input['bet_value'])
 
-            broke = bettor.broke_verify(current_bankroll)
-            stoploss_reached = bettor.stoploss_verify(current_bankroll)
-            stopgain_reached = bettor.stopgain_verify(current_bankroll)
-            if broke or stoploss_reached or stopgain_reached:
-                current_bankroll = bankroll_history[-1]
-                break
-            bankroll_history.append(current_bankroll)
-            bet_value_history.append(user_input['bet_value'])
+        for sample_result in self.bet_results:
+            bankroll_history = [self.user_input['initial_bankroll']]
+            bet_value_history = []
+            current_bankroll = self.user_input['initial_bankroll']
 
-        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
-            profitors_count += 1
-            profits.append(bettor.profit(current_bankroll))
-        else:
-            loses.append(bettor.profit(current_bankroll))
-        if broke:
-            broke_count += 1
-        if stoploss_reached:
-            sl_reached_count += 1
-        if stopgain_reached:
-            sg_reached_count += 1
+            for bet_result in sample_result:
+                current_bankroll = self.bettor.bet(
+                    bet_result, self.user_input['bet_value'], current_bankroll)
 
-        bankroll_histories.append(bankroll_history.copy())
-        bet_value_histories.append(bet_value_history.copy())
-    bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
+                broke = self.bettor.broke_verify(current_bankroll)
+                stoploss_reached = self.bettor.stoploss_verify(
+                    current_bankroll)
+                stopgain_reached = self.bettor.stopgain_verify(
+                    current_bankroll)
+                if broke or stoploss_reached or stopgain_reached:
+                    current_bankroll = bankroll_history[-1]
+                    break
+                bankroll_history.append(current_bankroll)
+                bet_value_history.append(self.user_input['bet_value'])
 
-    print_strategy_stats(
-        user_input, bankroll_histories, bet_value_histories, broke_count,
-        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
-    return bet_count_histories, bankroll_histories, title
+            if self.bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
+                self.profitors_count += 1
+                self.profits.append(self.bettor.profit(current_bankroll))
+            else:
+                self.loses.append(self.bettor.profit(current_bankroll))
+            if broke:
+                self.broke_count += 1
+            if stoploss_reached:
+                self.sl_reached_count += 1
+            if stopgain_reached:
+                self.sg_reached_count += 1
+
+            self.bankroll_histories.append(bankroll_history.copy())
+            self.bet_value_histories.append(bet_value_history.copy())
+        bet_count_histories = self.bettor.get_bet_count_histories(
+            self.bankroll_histories)
+
+        # print_strategy_stats(self.strategies_var)
+
+        self.graph.config(bet_count_histories,
+                          self.bankroll_histories, self.title)
+        return self.graph
 
 
 def percentage_bettor(
@@ -79,7 +96,8 @@ def percentage_bettor(
     user_input,
     title='Percentage Bettor',
     bet_percentage=None
-) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
+) -> PlotGraph:
+    graph = PlotGraph(user_input)
     bettor = Bettor(user_input)
 
     sl_reached_count = 0
@@ -132,11 +150,14 @@ def percentage_bettor(
         bankroll_histories.append(bankroll_history.copy())
         bet_value_histories.append(bet_value_history.copy())
     bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
-    
+
     print_strategy_stats(
         user_input, bankroll_histories, bet_value_histories, broke_count,
-        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
-    return bet_count_histories, bankroll_histories, title
+        sl_reached_count, sg_reached_count, profitors_count, profits, loses,
+        title)
+
+    graph.config(bet_count_histories, bankroll_histories, title)
+    return graph
 
 
 def kelly_criterion(
@@ -144,7 +165,7 @@ def kelly_criterion(
     user_input,
     title='Kelly Criterion',
     kelly_fraction=1
-) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
+) -> PlotGraph:
     bettor = Bettor(user_input)
 
     sl_reached_count = 0
@@ -217,7 +238,7 @@ def fixed_martingale(
     multiplication_factor=2,
     round_limit=10,
     inverted=False
-) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
+) -> PlotGraph:
     bettor = Bettor(user_input)
 
     current_round = 0
@@ -303,7 +324,7 @@ def percentage_martingale(
     multiplication_factor=2,
     round_limit=10,
     inverted=False
-) -> Tuple[List[List[int]], List[List[Union[int, float]]], str]:
+) -> PlotGraph:
     bettor = Bettor(user_input)
 
     current_round = 0
