@@ -1,4 +1,4 @@
-import betting.strategies as strategies
+import betting.Strategies as strategies
 from scipy.stats import binom
 
 

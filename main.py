@@ -2,7 +2,7 @@
 Author: Alexandre Calil Martins Fonseca
 https://github.com/xandao6/monte-carlo-betting-simulations
 '''
-from betting.strategies import FixedBettor
+from betting.Strategies import FixedBettor
 from betting.PlotGraph import PlotGraph
 from betting.UI import Stats
 from typing import Union, List
