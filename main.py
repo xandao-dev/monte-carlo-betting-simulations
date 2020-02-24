@@ -2,10 +2,12 @@
 Author: Alexandre Calil Martins Fonseca
 https://github.com/xandao6/monte-carlo-betting-simulations
 '''
+from typing import Union, List
+
+from betting.BetGenerator import BetGenerator
 from betting.Strategies import FixedBettor
 from betting.PlotGraph import PlotGraph
-from betting.UI import Stats
-from typing import Union, List
+from betting.Stats import Stats
 
 
 user_input = {
@@ -25,12 +27,14 @@ user_input = {
     'bet_percentage': 0.0100,  # Percentage System and MG, range: 0.0000-1.0000
 }
 
+bet_results = BetGenerator(user_input).generate_random_bet_results()
+
 
 def main():
-    # Stats().print_indicators_tutorial('PORTUGUESE')
+    # Stats.print_indicators_tutorial('PORTUGUESE')
     Stats(user_input=user_input).print_general_stats()
 
-    FixedBettor(user_input).simulate().show()
+    FixedBettor(bet_results, user_input).simulate_strategy().show()
     #fixed_bettor(bet_results, user_input).show()
     #percentage_bettor(bet_results, user_input).show()
 
