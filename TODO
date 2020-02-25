@@ -1,20 +1,20 @@
-1 - Plot bankroll average in another graph (PlotGraph.py)
+1 - 
 2 - new_fig removed, now we will plot a new figure comparing the bankroll average history graph
 3 - Plot bankroll histogram (PlotGraph.py)
 4 - Plot histogram from where bankroll broke (PlotGraph.py)
 5 - Plot other indicators like boillinger bands (PlotGraph.py)
-6 - Refactore Bettor (Bettor.py)
-7 - Create a template for strategies (strategies.py)
+6 - 
+7 - 
 8 - Finish the tutorial printer (ui.py)
 9 - Write a nice README
 10 - Update and add methods and functions description
 11 - 
 12 - Change plt to fig *********** WORKING ON IT
-13 - 
+13 - Empty Plot in KellyCriterion when expectate is negative.
 14 - 
 15 - 
 16 - 
-17 - 
+17 - Add just a property field, without a setter in strategies template
 18 - Create new strategies
 19 - Save results in a csv or txt file (ui.py and exportData.py[NEW File])
 20 - Save results in memory or read from file and return the best strategy (?)
