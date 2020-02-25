@@ -35,9 +35,10 @@ class PlotGraph:
             bankroll_history_average)
         plt.plot(bet_count_history, bankroll_history_average,
                  linewidth=2.5, color='k', label='Bankroll Average')
-        leg = plt.legend()
+        leg = plt.legend(loc='upper left')
         [line.set_linewidth(4.0) for line in leg.get_lines()]
 
+    #FIXME: Move to another class
     def __get_bankroll_history_average(self, bankroll_histories):
         bankroll_history_sum = []
         bankroll_history_average = []
@@ -64,5 +65,6 @@ class PlotGraph:
             return list()
         return bet_count_history
 
-    def show(self) -> None:
+    @staticmethod
+    def show() -> None:
         plt.show()
