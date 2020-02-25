@@ -2,7 +2,6 @@
 Author: Alexandre Calil Martins Fonseca
 https://github.com/xandao6/monte-carlo-betting-simulations
 '''
-from typing import Union, List
 
 from betting.BetGenerator import BetGenerator
 from betting.Strategies import FixedBettor, PercentageBettor, KellyCriterion, FixedMartingale
@@ -36,8 +35,8 @@ def main():
     Stats(user_input=user_input).print_general_stats()
 
     FixedBettor(*data).simulate_strategy()
-    # PercentageBettor(*data).simulate_strategy()
-    # KellyCriterion(*data).simulate_strategy()
+    PercentageBettor(*data).simulate_strategy()
+    KellyCriterion(*data).simulate_strategy()
     FixedMartingale(*data).simulate_strategy()
     FixedMartingale(*data, inverted=True).simulate_strategy()
     PercentageMartingale(*data).simulate_strategy()

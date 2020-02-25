@@ -20,14 +20,14 @@ def calculate_expected_rate_of_return(user_input):
     return rate_of_return
 
 
-def calculate_CDF_average_from_binomial_distribution(user_input, bet_results):
-    CDF_sum = 0
+def calculate_cdf_average_from_binomial_distribution(user_input, bet_results):
+    cdf_sum = 0
     for sample_result in bet_results:
         true_results = sum(1 for x in sample_result if x == True)
-        CDF_sum += binom.cdf(true_results,
+        cdf_sum += binom.cdf(true_results,
                              user_input['bet_count'], user_input['win_rate'])
-    CDF_average = round((CDF_sum/user_input['samples'])*100, 2)
-    return CDF_average
+    cdf_average = round((cdf_sum/user_input['samples'])*100, 2)
+    return cdf_average
 
 
 # FIXME: I think this formula is wrong because of payout.
@@ -72,8 +72,7 @@ def calculate_profited_percentage(user_input, profitors_count):
     return round((profitors_count / user_input['samples']) * 100, 2)
 
 
-def calculate_survived_profited_percentage(
-        user_input, broke_count, profitors_count):
+def calculate_survived_profited_percentage(user_input, broke_count, profitors_count):
     try:
         survive_profit_percent = round(
             (profitors_count / (user_input['samples'] - broke_count)) * 100, 2)
@@ -82,8 +81,7 @@ def calculate_survived_profited_percentage(
     return survive_profit_percent
 
 
-def calculate_survived_NO_profited_percentage(
-        user_input, broke_count, profitors_count):
+def calculate_survived_no_profited_percentage(user_input, broke_count, profitors_count):
     try:
         survive_NO_profit_percent = round(
             ((((user_input['samples'] - broke_count)) - profitors_count) /
@@ -93,24 +91,20 @@ def calculate_survived_NO_profited_percentage(
     return survive_NO_profit_percent
 
 
-def calculate_ROI_percentage_average(user_input, bankroll_histories):
-    ROI_sum = 0
+def calculate_roi_percentage_average(user_input, bankroll_histories):
+    roi_sum = 0
     for bankroll_history in bankroll_histories:
-        ROI_sum += ((bankroll_history[-1] - user_input['initial_bankroll']) /
-                    user_input['initial_bankroll'])*100
-    ROI_percentage_average = round(ROI_sum/user_input['samples'], 2)
-    return ROI_percentage_average
+        roi_sum += ((bankroll_history[-1] - user_input['initial_bankroll']) / user_input['initial_bankroll'])*100
+    roi_percentage_average = round(roi_sum/user_input['samples'], 2)
+    return roi_percentage_average
 
 
-def calculate_yield_percentage_average(
-        user_input, bankroll_histories, bet_value_histories):
+def calculate_yield_percentage_average(user_input, bankroll_histories, bet_value_histories):
     bet_value_sum = 0
     yield_sum = 0
-    for bankroll_history, bet_value_history in zip(
-            bankroll_histories, bet_value_histories):
+    for bankroll_history, bet_value_history in zip(bankroll_histories, bet_value_histories):
         bet_value_sum = sum(bet_value_history)
-        yield_sum += ((bankroll_history[-1] -
-                       user_input['initial_bankroll'])/bet_value_sum)*100
+        yield_sum += ((bankroll_history[-1] - user_input['initial_bankroll'])/bet_value_sum)*100
 
     yield_percentage_average = round(yield_sum/user_input['samples'], 2)
     return yield_percentage_average
@@ -126,8 +120,7 @@ def calculate_average_of_number_of_bets(user_input, bet_value_histories):
 
 def calculate_final_bankroll_average(user_input, bankroll_histories):
     final_bankroll_sum = 0
-    for bankroll_history in bankroll_histories:
-        final_bankroll_sum += bankroll_history[-1]
+    for bankroll_history in bankroll_histories: final_bankroll_sum += bankroll_history[-1]
     final_bankroll_average = round(final_bankroll_sum/user_input['samples'], 2)
     return final_bankroll_average
 
