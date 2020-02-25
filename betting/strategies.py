@@ -221,8 +221,9 @@ class FixedMartingale(Strategies):
 
     def strategy_setup(self):
         if self.inverted and self.title == 'Fixed Martingale': self.title = 'Fixed Anti-Martingale'
-
         self.current_round = 0
+    
+    def bet_value_calculator_fixed(self):
         if self.bet_value is None: self._Strategies__bet_value = self.user_input['bet_value']
         self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
         self.initial_bet_value = self._Strategies__bet_value
@@ -306,3 +307,35 @@ class PercentageMartingale(Strategies):
             else:
                 self._Strategies__bet_value = self.initial_bet_value
                 self.current_round = 0
+
+
+class FixedSoros(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Fixed Soros',
+            bet_value: Union[int, float, None] = None,
+            rounds: int = 5):
+        super().__init__(bet_results, user_input, title)
+        self.bet_value = bet_value
+        self.rounds = rounds
+    
+    def strategy_setup(self):
+        if self.rounds <= 1: self.rounds = 2
+        self.current_round = 0
+    
+    def bet_value_calculator_fixed(self):
+        if self.bet_value is None: self._Strategies__bet_value = self.user_input['bet_value']
+        self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+        self.initial_bet_value = self._Strategies__bet_value
+
+    def bet_value_calculator_non_fixed(self):
+        if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
+                and self._Strategies__bet_result_index > 0 and self.current_round < self.rounds:
+            self._Strategies__bet_value += self._Strategies__bet_value*self.user_input['payout_rate']
+            self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+            self.current_round += 1
+        else:
+            self._Strategies__bet_value = self.initial_bet_value
+            self.current_round = 0
