@@ -24,7 +24,10 @@ class Strategies(ABC):
     def simulate_strategy(self):
         graph: PlotGraph = PlotGraph(self.user_input)
 
-        current_bankroll: Union[int, float] = self.user_input['initial_bankroll']
+        self.__current_bankroll: Union[int,
+                                       float] = self.user_input['initial_bankroll']
+        self.__sample_result: List[bool] = self.bet_results[0][0]
+        self.__bet_result_index: int = 0
         sl_reached_count: int = 0
         sg_reached_count: int = 0
         broke_count: int = 0
@@ -41,31 +44,31 @@ class Strategies(ABC):
         self.strategy_setup()
         self.bet_value_calculator_fixed()
 
-        for sample_result in self.bet_results:
+        for self.__sample_result in self.bet_results:
             bankroll_history = [self.user_input['initial_bankroll']]
             bet_value_history = []
-            current_bankroll = self.user_input['initial_bankroll']
-            for bet_result in sample_result:
+            __current_bankroll = self.user_input['initial_bankroll']
+            for self.__bet_result_index, bet_result in enumerate(self.__sample_result):
                 self.bet_value_calculator_non_fixed()
-                current_bankroll = self.__bet(bet_result, current_bankroll)
+                __current_bankroll = self.__bet(bet_result, __current_bankroll)
 
-                broke = self.__broke_verify(current_bankroll, broke)
+                broke = self.__broke_verify(__current_bankroll, broke)
                 stoploss_reached = self.__stoploss_verify(
-                    current_bankroll, stoploss_reached)
+                    __current_bankroll, stoploss_reached)
                 stopgain_reached = self.__stopgain_verify(
-                    current_bankroll, stopgain_reached)
+                    __current_bankroll, stopgain_reached)
                 if broke or stoploss_reached or stopgain_reached:
-                    current_bankroll = bankroll_history[-1]
+                    __current_bankroll = bankroll_history[-1]
                     break
 
-                bankroll_history.append(current_bankroll)
+                bankroll_history.append(__current_bankroll)
                 bet_value_history.append(self.__bet_value)
 
-            if self.__profit_or_lose(current_bankroll) > 0 and not (broke or stoploss_reached):
+            if self.__profit_or_lose(__current_bankroll) > 0 and not (broke or stoploss_reached):
                 profitors_count += 1
-                profits.append(self.__profit_or_lose(current_bankroll))
+                profits.append(self.__profit_or_lose(__current_bankroll))
             else:
-                loses.append(self.__profit_or_lose(current_bankroll))
+                loses.append(self.__profit_or_lose(__current_bankroll))
 
             if broke:
                 broke_count += 1
@@ -77,13 +80,14 @@ class Strategies(ABC):
             bankroll_histories.append(bankroll_history.copy())
             bet_value_histories.append(bet_value_history.copy())
 
-        bet_count_histories = self.__get_bet_count_histories(bankroll_histories)
+        bet_count_histories = self.__get_bet_count_histories(
+            bankroll_histories)
 
-        Stats(self.bet_results, self.user_input, bankroll_histories,
-              bet_value_histories, sl_reached_count, sg_reached_count,
-              broke_count, profitors_count, profits, loses, self.title
-        ).print_strategy_stats()
+        stats: Stats = Stats(self.bet_results, self.user_input, bankroll_histories,
+                             bet_value_histories, sl_reached_count, sg_reached_count,
+                             broke_count, profitors_count, profits, loses, self.title)
 
+        stats.print_strategy_stats()
         graph.config(bet_count_histories, bankroll_histories, self.title)
         return graph
 
@@ -180,302 +184,162 @@ class FixedBettor(Strategies):
             self._Strategies__bet_value)
 
 
-'''
-def percentage_bettor(
-    bet_results,
-    user_input,
-    title='Percentage Bettor',
-    bet_percentage=None
-) -> PlotGraph:
+class PercentageBettor(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Percentage Bettor',
+            bet_percentage: Union[int, float, None] = None):
+        super().__init__(bet_results, user_input, title)
+        self.bet_percentage = bet_percentage
 
-    if bet_percentage is None:
-        bet_percentage = user_input['bet_percentage']
+    def strategy_setup(self):
+        if self.bet_percentage is None:
+            self.bet_percentage = self.user_input['bet_percentage']
 
-    for sample_result in bet_results:
-        bankroll_history = [user_input['initial_bankroll']]
-        bet_value_history = []
-        current_bankroll = user_input['initial_bankroll']
-
-        for bet_result in sample_result:
-            bet_value = current_bankroll*bet_percentage
-            bet_value = bettor.max_min_verify(bet_value)
-
-            current_bankroll = bettor.bet(
-                bet_result, bet_value, current_bankroll)
-
-            broke = bettor.broke_verify(current_bankroll, broke_value=1)
-            stoploss_reached = bettor.stoploss_verify(current_bankroll)
-            stopgain_reached = bettor.stopgain_verify(current_bankroll)
-            if broke or stoploss_reached or stopgain_reached:
-                current_bankroll = bankroll_history[-1]
-                break
-            bankroll_history.append(current_bankroll)
-            bet_value_history.append(bet_value)
-
-        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
-            profitors_count += 1
-            profits.append(bettor.profit(current_bankroll))
-        else:
-            loses.append(bettor.profit(current_bankroll))
-        if broke:
-            broke_count += 1
-        if stoploss_reached:
-            sl_reached_count += 1
-        if stopgain_reached:
-            sg_reached_count += 1
-
-        bankroll_histories.append(bankroll_history.copy())
-        bet_value_histories.append(bet_value_history.copy())
-    bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
-
-    print_strategy_stats(
-        user_input, bankroll_histories, bet_value_histories, broke_count,
-        sl_reached_count, sg_reached_count, profitors_count, profits, loses,
-        title)
-
-    graph.config(bet_count_histories, bankroll_histories, title)
-    return graph
+    def bet_value_calculator_non_fixed(self):
+        self._Strategies__bet_value = self._Strategies__current_bankroll*self.bet_percentage
+        self._Strategies__bet_value = self.max_min_verify(
+            self._Strategies__bet_value)
 
 
-def kelly_criterion(
-    bet_results,
-    user_input,
-    title='Kelly Criterion',
-    kelly_fraction=1
-) -> PlotGraph:
+class KellyCriterion(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Kelly Criterion',
+            kelly_fraction: Union[int, float, None] = 1):
+        super().__init__(bet_results, user_input, title)
+        self.kelly_fraction = kelly_fraction
 
-    kelly_percentage = user_input['win_rate'] - \
-        ((1-user_input['win_rate'])/(user_input['payout_rate']/1))
-    if kelly_percentage <= 0:
-        print(f'\n*{title.upper()}*')
-        print('Negative Expectation. DO NOT operate!')
-        # FIXME the script are ploting an empty graph
-        return [[], [], title]
-
-    for sample_result in bet_results:
-        bankroll_history = [user_input['initial_bankroll']]
-        bet_value_history = []
-        current_bankroll = user_input['initial_bankroll']
-
-        for bet_result in sample_result:
-            bet_value = current_bankroll*kelly_percentage*kelly_fraction
-            bet_value = bettor.max_min_verify(bet_value)
-
-            current_bankroll = bettor.bet(
-                bet_result, bet_value, current_bankroll)
-
-            broke = bettor.broke_verify(current_bankroll, broke_value=1)
-            stoploss_reached = bettor.stoploss_verify(current_bankroll)
-            stopgain_reached = bettor.stopgain_verify(current_bankroll)
-            if broke or stoploss_reached or stopgain_reached:
-                current_bankroll = bankroll_history[-1]
-                break
-            bankroll_history.append(current_bankroll)
-            bet_value_history.append(bet_value)
-
-        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
-            profitors_count += 1
-            profits.append(bettor.profit(current_bankroll))
-        else:
-            loses.append(bettor.profit(current_bankroll))
-        if broke:
-            broke_count += 1
-        if stoploss_reached:
-            sl_reached_count += 1
-        if stopgain_reached:
-            sg_reached_count += 1
-
-        bankroll_histories.append(bankroll_history.copy())
-        bet_value_histories.append(bet_value_history.copy())
-    bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
-
-    print_strategy_stats(
-        user_input, bankroll_histories, bet_value_histories, broke_count,
-        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title, kelly_percentage)
-    return bet_count_histories, bankroll_histories, title
-
-
-def fixed_martingale(
-    bet_results,
-    user_input,
-    title='Fixed Martingale',
-    bet_value=None,
-    multiplication_factor=2,
-    round_limit=10,
-    inverted=False
-) -> PlotGraph:
-    bettor = Bettor(user_input)
-
-    current_round = 0
-    sl_reached_count = 0
-    sg_reached_count = 0
-    broke_count = 0
-    profitors_count = 0
-
-    profits = []
-    loses = []
-    bet_count_histories = []
-    bet_value_histories = []
-    bankroll_histories = []
-
-    if bet_value is None:
-        bet_value = user_input['bet_value']
-    bet_value = bettor.max_min_verify(bet_value)
-    initial_bet_value = bet_value
-
-    for sample_result in bet_results:
-        bankroll_history = [user_input['initial_bankroll']]
-        bet_value_history = []
-        current_bankroll = user_input['initial_bankroll']
-
-        for i, bet_result in enumerate(sample_result):
-            if not inverted:
-                if sample_result[i-1] == False and i > 0 and current_round < round_limit:
-                    bet_value = multiplication_factor*bet_value
-                    bet_value = bettor.max_min_verify(bet_value)
-                    current_round += 1
-                else:
-                    bet_value = initial_bet_value
-                    current_round = 0
-            else:
-                if sample_result[i-1] == True and i > 0 and current_round < round_limit:
-                    bet_value = multiplication_factor*bet_value
-                    bet_value = bettor.max_min_verify(bet_value)
-                    current_round += 1
-                else:
-                    bet_value = initial_bet_value
-                    current_round = 0
-
-            current_bankroll = bettor.bet(
-                bet_result, bet_value, current_bankroll)
-
-            broke = bettor.broke_verify(current_bankroll)
-            stoploss_reached = bettor.stoploss_verify(current_bankroll)
-            stopgain_reached = bettor.stopgain_verify(current_bankroll)
-            if broke or stoploss_reached or stopgain_reached:
-                current_bankroll = bankroll_history[-1]
-                break
-            bankroll_history.append(current_bankroll)
-            bet_value_history.append(bet_value)
-
-        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
-            profitors_count += 1
-            profits.append(bettor.profit(current_bankroll))
-        else:
-            loses.append(bettor.profit(current_bankroll))
-        if broke:
-            broke_count += 1
-        if stoploss_reached:
-            sl_reached_count += 1
-        if stopgain_reached:
-            sg_reached_count += 1
-
-        bankroll_histories.append(bankroll_history.copy())
-        bet_value_histories.append(bet_value_history.copy())
-    bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
-
-    print_strategy_stats(
-        user_input, bankroll_histories, bet_value_histories, broke_count,
-        sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
-    return bet_count_histories, bankroll_histories, title
-
-
-def percentage_martingale(
-    bet_results,
-    user_input,
-    title='Percentage Martingale',
-    bet_percentage=None,
-    use_kelly_percentage=False,
-    multiplication_factor=2,
-    round_limit=10,
-    inverted=False
-) -> PlotGraph:
-    bettor = Bettor(user_input)
-
-    current_round = 0
-    sl_reached_count = 0
-    sg_reached_count = 0
-    broke_count = 0
-    profitors_count = 0
-
-    profits = []
-    loses = []
-    bet_count_histories = []
-    bet_value_histories = []
-    bankroll_histories = []
-
-    if bet_percentage is None:
-        bet_percentage = user_input['bet_percentage']
-    if use_kelly_percentage:
-        bet_percentage = user_input['win_rate'] - \
-            ((1-user_input['win_rate'])/(user_input['payout_rate']/1))
-        if bet_percentage <= 0:
-            print(f'\n*{title.upper()}*')
+    def strategy_setup(self):
+        self.kelly_percentage = self.user_input['win_rate'] - \
+            ((1-self.user_input['win_rate']) /
+             (self.user_input['payout_rate']/1))
+        if self.kelly_percentage <= 0:
+            print(f'\n*{self.title.upper()}*')
             print('Negative Expectation. DO NOT operate!')
-            # FIXME the script are ploting an empty graph
-            return [[], [], title]
+            return [[], [], self.title]
 
-    for sample_result in bet_results:
-        bankroll_history = [user_input['initial_bankroll']]
-        bet_value_history = []
-        current_bankroll = user_input['initial_bankroll']
+    def bet_value_calculator_non_fixed(self):
+        self._Strategies__bet_value = self._Strategies__current_bankroll * \
+            self.kelly_percentage*self.kelly_fraction
+        self._Strategies__bet_value = self.max_min_verify(
+            self._Strategies__bet_value)
 
-        for i, bet_result in enumerate(sample_result):
-            initial_bet_value = current_bankroll*bet_percentage
-            initial_bet_value = bettor.max_min_verify(initial_bet_value)
-            if not inverted:
-                if sample_result[i-1] == False and i > 0 and current_round < round_limit:
-                    bet_value = multiplication_factor*bet_value
-                    bet_value = bettor.max_min_verify(bet_value)
-                    current_round += 1
-                else:
-                    bet_value = initial_bet_value
-                    current_round = 0
+
+class FixedMartingale(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Fixed Martingale',
+            bet_value: Union[int, float, None] = None,
+            multiplication_factor: int = 2,
+            round_limit: int = 5,
+            inverted: bool = False):
+        super().__init__(bet_results, user_input, title)
+        self.bet_value = bet_value
+        self.multiplication_factor = multiplication_factor
+        self.round_limit = round_limit
+        self.inverted = inverted
+
+    def strategy_setup(self):
+        if self.inverted and self.title == 'Fixed Martingale':
+            self.title = 'Fixed Anti-Martingale'
+
+        self.current_round = 0
+        if self.bet_value is None:
+            self._Strategies__bet_value = self.user_input['bet_value']
+        self._Strategies__bet_value = self.max_min_verify(
+            self._Strategies__bet_value)
+        self.initial_bet_value = self._Strategies__bet_value
+
+    def bet_value_calculator_non_fixed(self):
+        if not self.inverted:
+            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == False \
+                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
+                self._Strategies__bet_value = self.max_min_verify(
+                    self._Strategies__bet_value)
+                self.current_round += 1
             else:
-                if sample_result[i-1] == True and i > 0 and current_round < round_limit:
-                    bet_value = multiplication_factor*bet_value
-                    bet_value = bettor.max_min_verify(bet_value)
-                    current_round += 1
-                else:
-                    bet_value = initial_bet_value
-                    current_round = 0
-
-            current_bankroll = bettor.bet(
-                bet_result, bet_value, current_bankroll)
-
-            broke = bettor.broke_verify(current_bankroll)
-            stoploss_reached = bettor.stoploss_verify(current_bankroll)
-            stopgain_reached = bettor.stopgain_verify(current_bankroll)
-            if broke or stoploss_reached or stopgain_reached:
-                current_bankroll = bankroll_history[-1]
-                break
-            bankroll_history.append(current_bankroll)
-            bet_value_history.append(bet_value)
-
-        if bettor.profit(current_bankroll) > 0 and not (broke or stoploss_reached):
-            profitors_count += 1
-            profits.append(bettor.profit(current_bankroll))
+                self._Strategies__bet_value = self.initial_bet_value
+                self.current_round = 0
         else:
-            loses.append(bettor.profit(current_bankroll))
-        if broke:
-            broke_count += 1
-        if stoploss_reached:
-            sl_reached_count += 1
-        if stopgain_reached:
-            sg_reached_count += 1
+            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
+                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
+                self._Strategies__bet_value = self.max_min_verify(
+                    self._Strategies__bet_value)
+                self.current_round += 1
+            else:
+                self._Strategies__bet_value = self.initial_bet_value
+                self.current_round = 0
 
-        bankroll_histories.append(bankroll_history.copy())
-        bet_value_histories.append(bet_value_history.copy())
-    bet_count_histories = bettor.get_bet_count_histories(bankroll_histories)
 
-    if not use_kelly_percentage:
-        print_strategy_stats(
-            user_input, bankroll_histories, bet_value_histories, broke_count,
-            sl_reached_count, sg_reached_count, profitors_count, profits, loses, title)
-    else:
-        print_strategy_stats(
-            user_input, bankroll_histories, bet_value_histories, broke_count,
-            sl_reached_count, sg_reached_count, profitors_count, profits, loses,
-            title, kelly_percentage=bet_percentage)
-    return bet_count_histories, bankroll_histories, title
-'''
+class PercentageMartingale(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Percentage Martingale',
+            bet_percentage: Union[int, float, None] = None,
+            multiplication_factor: int = 2,
+            round_limit: int = 5,
+            inverted: bool = False,
+            use_kelly_percentage: bool = False,
+            kelly_fraction: Union[int, float, None] = 1):
+        super().__init__(bet_results, user_input, title)
+        self.bet_percentage = bet_percentage
+        self.multiplication_factor = multiplication_factor
+        self.round_limit = round_limit
+        self.inverted = inverted
+        self.use_kelly_percentage = use_kelly_percentage
+        self.kelly_fraction = kelly_fraction
+
+    def strategy_setup(self):
+        if self.inverted and self.use_kelly_percentage and self.title == 'Percentage Martingale':
+            self.title = 'Percentage Kelly Anti-Martingale'
+        elif self.inverted and not self.use_kelly_percentage and self.title == 'Percentage Martingale':
+            self.title = 'Percentage Anti-Martingale'
+        elif not self.inverted and self.use_kelly_percentage and self.title == 'Percentage Martingale':
+            self.title = 'Percentage Kelly Martingale'
+
+        self.current_round = 0
+        if self.bet_percentage is None:
+            self.bet_percentage = self.user_input['bet_percentage']
+        if self.use_kelly_percentage:
+            self.bet_percentage = self.user_input['win_rate'] - \
+                ((1-self.user_input['win_rate']) /
+                 (self.user_input['payout_rate']/1))
+            if self.bet_percentage <= 0:
+                print(f'\n*{self.title.upper()}*')
+                print('Negative Expectation. DO NOT operate!')
+                return [[], [], title]
+
+    def bet_value_calculator_non_fixed(self):
+        self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage
+        self.initial_bet_value = self.max_min_verify(self.initial_bet_value)
+        if not self.inverted:
+            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == False \
+                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
+                self._Strategies__bet_value = self.max_min_verify(
+                    self._Strategies__bet_value)
+                self.current_round += 1
+            else:
+                self._Strategies__bet_value = self.initial_bet_value
+                self.current_round = 0
+        else:
+            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
+                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
+                self._Strategies__bet_value = self.max_min_verify(
+                    self._Strategies__bet_value)
+                self.current_round += 1
+            else:
+                self._Strategies__bet_value = self.initial_bet_value
+                self.current_round = 0
