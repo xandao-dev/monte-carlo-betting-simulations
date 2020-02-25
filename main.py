@@ -5,7 +5,8 @@ https://github.com/xandao6/monte-carlo-betting-simulations
 from typing import Union, List
 
 from betting.BetGenerator import BetGenerator
-from betting.Strategies import FixedBettor
+from betting.Strategies import FixedBettor, PercentageBettor, KellyCriterion, FixedMartingale
+from betting.Strategies import PercentageMartingale
 from betting.PlotGraph import PlotGraph
 from betting.Stats import Stats
 
@@ -22,38 +23,30 @@ user_input = {
     'maximum_bet_value': None,
     'stoploss': None,
     'stopgain': None,
-    # SPECIFIC INPUT
-    'bet_value': 5,  # Fixed System and MG
-    'bet_percentage': 0.0100,  # Percentage System and MG, range: 0.0000-1.0000
+    'bet_value': 5, # Isn't used in all strategies
+    'bet_percentage': 0.0100,  # Isn't used in all strategies, range: 0.0000-1.0000
 }
 
 bet_results = BetGenerator(user_input).generate_random_bet_results()
+data = (bet_results, user_input)
 
 
 def main():
     # Stats.print_indicators_tutorial('PORTUGUESE')
     Stats(user_input=user_input).print_general_stats()
 
-    FixedBettor(bet_results, user_input).simulate_strategy().show()
-    #fixed_bettor(bet_results, user_input).show()
-    #percentage_bettor(bet_results, user_input).show()
+    FixedBettor(*data).simulate_strategy()
+    # PercentageBettor(*data).simulate_strategy()
+    # KellyCriterion(*data).simulate_strategy()
+    FixedMartingale(*data).simulate_strategy()
+    FixedMartingale(*data, inverted=True).simulate_strategy()
+    PercentageMartingale(*data).simulate_strategy()
+    PercentageMartingale(*data, use_kelly_percentage=True).simulate_strategy()
+    PercentageMartingale(*data, inverted=True).simulate_strategy()
+    PercentageMartingale(*data, inverted=True, use_kelly_percentage=True).simulate_strategy()
 
+    PlotGraph.show()
 
-'''
-    kelly_criterion(bet_results, user_input).show()
-
-    fixed_martingale(bet_results, user_input, round_limit=3).show()
-
-    fixed_martingale(bet_results, user_input, inverted=True,
-                     title='Fixed Anti-Martingale', 
-                     round_limit=3).show()
-
-    percentage_martingale(bet_results, user_input, round_limit=3)
-
-    percentage_martingale(bet_results, user_input, inverted=True,
-                                 title='Percentage Anti-Martingale',
-                                 round_limit=3).show()
-'''
 
 if __name__ == '__main__':
     main()

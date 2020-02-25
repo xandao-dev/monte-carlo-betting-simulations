@@ -13,7 +13,7 @@
 13 - Empty Plot in KellyCriterion when expectate is negative.
 14 - 
 15 - 
-16 - 
+16 - Plot all graphs together too
 17 - Add just a property field, without a setter in strategies template
 18 - Create new strategies
 19 - Save results in a csv or txt file (ui.py and exportData.py[NEW File])
