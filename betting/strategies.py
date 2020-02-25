@@ -9,7 +9,7 @@ from betting.statistical_calculations import *
 
 """
 Strategies TODO: dAlembert, fibonacci,
-oscars_grind, patrick, sorogales, soros, whittaker
+oscars_grind, patrick, sorogales, whittaker
 """
 strategies_list = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion',
                    'fixed_martingale', 'percentage_martingale']
@@ -47,26 +47,26 @@ class Strategies(ABC):
         for self.__sample_result in self.bet_results:
             bankroll_history = [self.user_input['initial_bankroll']]
             bet_value_history = []
-            __current_bankroll = self.user_input['initial_bankroll']
+            self.__current_bankroll = self.user_input['initial_bankroll']
             for self.__bet_result_index, bet_result in enumerate(self.__sample_result):
                 self.bet_value_calculator_non_fixed()
-                __current_bankroll = self.__bet(bet_result, __current_bankroll)
+                self.__bet(bet_result)
 
-                broke = self.__broke_verify(__current_bankroll, broke)
-                stoploss_reached = self.__stoploss_verify(__current_bankroll, stoploss_reached)
-                stopgain_reached = self.__stopgain_verify(__current_bankroll, stopgain_reached)
+                broke = self.__broke_verify(broke)
+                stoploss_reached = self.__stoploss_verify(stoploss_reached)
+                stopgain_reached = self.__stopgain_verify(stopgain_reached)
                 if broke or stoploss_reached or stopgain_reached:
-                    __current_bankroll = bankroll_history[-1]
+                    self.__current_bankroll = bankroll_history[-1]
                     break
 
-                bankroll_history.append(__current_bankroll)
+                bankroll_history.append(self.__current_bankroll)
                 bet_value_history.append(self.__bet_value)
 
-            if self.__profit_or_lose(__current_bankroll) > 0 and not (broke or stoploss_reached):
+            if self.__profit_or_lose() > 0 and not (broke or stoploss_reached):
                 profitors_count += 1
-                profits.append(self.__profit_or_lose(__current_bankroll))
+                profits.append(self.__profit_or_lose())
             else:
-                loses.append(self.__profit_or_lose(__current_bankroll))
+                loses.append(self.__profit_or_lose())
 
             if broke: broke_count += 1
             if stoploss_reached: sl_reached_count += 1
@@ -86,28 +86,27 @@ class Strategies(ABC):
         return graph
 
     # region BASE METHODS
-    def __bet(self, bet_result, current_bankroll):
-        if bet_result: current_bankroll += self.__bet_value*self.user_input['payout_rate']
-        else: current_bankroll -= self.__bet_value
-        return current_bankroll
+    def __bet(self, bet_result):
+        if bet_result: self.__current_bankroll += self.__bet_value*self.user_input['payout_rate']
+        else: self.__current_bankroll -= self.__bet_value
 
-    def __broke_verify(self, current_bankroll, broke, broken_when_is_less_than=1):
+    def __broke_verify(self, broke, broken_when_is_less_than=1):
         if broken_when_is_less_than < 1: broken_when_is_less_than = 1
-        broke = True if current_bankroll < broken_when_is_less_than else False
+        broke = True if self.__current_bankroll < broken_when_is_less_than else False
         return broke
 
-    def __stoploss_verify(self, current_bankroll, stoploss_reached):
+    def __stoploss_verify(self, stoploss_reached):
         if self.user_input['stoploss'] is not None:
-            if current_bankroll <= self.user_input['stoploss']: stoploss_reached = True
+            if self.__current_bankroll <= self.user_input['stoploss']: stoploss_reached = True
         return stoploss_reached
 
-    def __stopgain_verify(self, current_bankroll, stopgain_reached):
+    def __stopgain_verify(self, stopgain_reached):
         if self.user_input['stopgain'] is not None:
-            if current_bankroll >= self.user_input['stopgain']: stopgain_reached = True
+            if self.__current_bankroll >= self.user_input['stopgain']: stopgain_reached = True
         return stopgain_reached
 
-    def __profit_or_lose(self, current_bankroll):
-        return current_bankroll - self.user_input['initial_bankroll']
+    def __profit_or_lose(self):
+        return self.__current_bankroll - self.user_input['initial_bankroll']
 
     def __get_bet_count_histories(self, bankroll_histories):
         bet_count_histories = []
@@ -284,7 +283,7 @@ class PercentageMartingale(Strategies):
             if self.bet_percentage <= 0:
                 print(f'\n*{self.title.upper()}*')
                 print('Negative Expectation. DO NOT operate!')
-                return [[], [], title]
+                return [[], [], self.title]
 
     def bet_value_calculator_non_fixed(self):
         self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage
@@ -339,3 +338,45 @@ class FixedSoros(Strategies):
         else:
             self._Strategies__bet_value = self.initial_bet_value
             self.current_round = 0
+
+
+class PercentageSoros(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Percentage Soros',
+            bet_percentage: Union[int, float, None] = None,
+            rounds: int = 5,
+            use_kelly_percentage: bool = False):
+        super().__init__(bet_results, user_input, title)
+        self.bet_percentage = bet_percentage
+        self.rounds = rounds
+        self.use_kelly_percentage = use_kelly_percentage
+
+    def strategy_setup(self):
+        if self.rounds <= 1: self.rounds = 2
+        self.current_round = 0
+
+        if self.bet_percentage is None: self.bet_percentage = self.user_input['bet_percentage']
+        if self.use_kelly_percentage:
+            self.bet_percentage = self.user_input['win_rate'] - ((1-self.user_input['win_rate']) / (self.user_input['payout_rate']/1))
+            if self.bet_percentage <= 0:
+                print(f'\n*{self.title.upper()}*')
+                print('Negative Expectation. DO NOT operate!')
+                return [[], [], self.title]
+
+    def bet_value_calculator_non_fixed(self):
+        self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage
+        self.initial_bet_value = self.max_min_verify(self.initial_bet_value)
+
+        if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
+                and self._Strategies__bet_result_index > 0 and self.current_round < self.rounds:
+            self._Strategies__bet_value += self._Strategies__bet_value*self.user_input['payout_rate']
+            self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+            self.current_round += 1
+        else:
+            self._Strategies__bet_value = self.initial_bet_value
+            self.current_round = 0
+
+
