@@ -4,14 +4,14 @@
 4 - Plot histogram from where bankroll broke (PlotGraph.py)
 5 - Plot other indicators like boillinger bands (PlotGraph.py)
 6 - 
-7 - 
+7 - Sum of all final bankroll
 8 - Finish the tutorial printer (ui.py)
 9 - Write a nice README
 10 - Update and add methods and functions description
 11 - 
 12 - Change plt to fig *********** WORKING ON IT
 13 - Empty Plot in KellyCriterion when expectate is negative.
-14 - 
+14 - Print KellyCriterion percentage
 15 - 
 16 - Plot all graphs together too
 17 - Add just a property field, without a setter in strategies template
