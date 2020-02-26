@@ -31,7 +31,7 @@ class PlotGraph:
         plt.axhline(0, color='r', linewidth=1.2)
 
     def __config_bankroll_average(self, bankroll_histories):
-        bankroll_history_average = get_bankroll_history_average(user_input['samples'], bankroll_histories)
+        bankroll_history_average = get_bankroll_history_average(self.user_input['samples'], bankroll_histories)
         bet_count_history = get_bet_count_history(bankroll_history_average)
         plt.plot(bet_count_history, bankroll_history_average,
                  linewidth=2.5, color='k', label='Bankroll Average')
