@@ -5,14 +5,14 @@ https://github.com/xandao6/monte-carlo-betting-simulations
 
 from betting.BetGenerator import BetGenerator
 from betting.Strategies import FixedBettor, PercentageBettor, KellyCriterion, FixedMartingale
-from betting.Strategies import PercentageMartingale
+from betting.Strategies import PercentageMartingale, FixedSoros, PercentageSoros, FixedFibonacci
 from betting.PlotGraph import PlotGraph
 from betting.Stats import Stats
 
 
 user_input = {
     'samples': 10,
-    'bet_count': 5000,
+    'bet_count': 100,
     'win_rate': 0.5500,  # range: 0.0000-1.0000
     'lose_rate': 0.4500,  # range: 1.0000-0.0000
     'payout_rate': 0.8700,  # range: 0.0000-2.0000 generally, but you choose
@@ -34,15 +34,23 @@ def main():
     # Stats.print_indicators_tutorial('PORTUGUESE')
     Stats(user_input=user_input).print_general_stats()
 
-    FixedBettor(*data).simulate_strategy()
-    PercentageBettor(*data).simulate_strategy()
-    KellyCriterion(*data).simulate_strategy()
-    FixedMartingale(*data).simulate_strategy()
-    FixedMartingale(*data, inverted=True).simulate_strategy()
-    PercentageMartingale(*data).simulate_strategy()
-    PercentageMartingale(*data, use_kelly_percentage=True).simulate_strategy()
-    PercentageMartingale(*data, inverted=True).simulate_strategy()
-    PercentageMartingale(*data, inverted=True, use_kelly_percentage=True).simulate_strategy()
+    #FixedBettor(*data).simulate_strategy()
+    #PercentageBettor(*data).simulate_strategy()
+    #KellyCriterion(*data).simulate_strategy()
+    #FixedMartingale(*data).simulate_strategy()
+    #FixedMartingale(*data, inverted=True).simulate_strategy()
+    #PercentageMartingale(*data).simulate_strategy()
+    #PercentageMartingale(*data, use_kelly_percentage=True).simulate_strategy()
+    #PercentageMartingale(*data, inverted=True).simulate_strategy()
+    #PercentageMartingale(*data, inverted=True, use_kelly_percentage=True).simulate_strategy()
+    #FixedSoros(*data).simulate_strategy()
+    #PercentageSoros(*data).simulate_strategy()
+    FixedFibonacci(*data).simulate_strategy()
+    FixedFibonacci(*data, inverted=True).simulate_strategy()
+
+    # YOU CAN USE FOR LOOPS TO CHANGE PARAMETERS
+    #for i in range(2,7,2):
+    #    FixedSoros(*data, title=f'Fixed Soros, round max: {i}', rounds=i).simulate_strategy()
 
     PlotGraph.show()
 
