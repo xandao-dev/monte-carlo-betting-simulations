@@ -2,14 +2,14 @@
 2 - new_fig removed, now we will plot a new figure comparing the bankroll average history graph
 3 - Plot bankroll histogram (PlotGraph.py)
 4 - Plot histogram from where bankroll broke (PlotGraph.py)
-5 - Plot other indicators like boillinger bands (PlotGraph.py)
-6 - 
+5 - Plot other indicators like boillinger bands, moving averages(PlotGraph.py)
+6 - Add Currency to graphs
 7 - Sum of all final bankroll
 8 - Finish the tutorial printer (ui.py)
 9 - Write a nice README
 10 - Update and add methods and functions description
 11 - 
-12 - Change plt to fig *********** WORKING ON IT
+12 - 
 13 - Empty Plot in KellyCriterion when expectate is negative.
 14 - Print KellyCriterion percentage
 15 - 
