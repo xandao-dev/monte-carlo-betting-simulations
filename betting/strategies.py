@@ -229,24 +229,15 @@ class FixedMartingale(Strategies):
         self.initial_bet_value = self._Strategies__bet_value
 
     def bet_value_calculator_non_fixed(self):
-        if not self.inverted:
-            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == False \
-                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
-                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
-                self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
-                self.current_round += 1
-            else:
-                self._Strategies__bet_value = self.initial_bet_value
-                self.current_round = 0
+        expected_last_result = True if self.inverted else False
+        previous_bet_result = self._Strategies__sample_result[self._Strategies__bet_result_index - 1]
+        if previous_bet_result == expected_last_result and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+            self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
+            self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+            self.current_round += 1
         else:
-            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
-                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
-                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
-                self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
-                self.current_round += 1
-            else:
-                self._Strategies__bet_value = self.initial_bet_value
-                self.current_round = 0
+            self._Strategies__bet_value = self.initial_bet_value
+            self.current_round = 0
 
 
 class PercentageMartingale(Strategies):
@@ -289,24 +280,16 @@ class PercentageMartingale(Strategies):
     def bet_value_calculator_non_fixed(self):
         self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage
         self.initial_bet_value = self.max_min_verify(self.initial_bet_value)
-        if not self.inverted:
-            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == False \
-                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
-                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
-                self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
-                self.current_round += 1
-            else:
-                self._Strategies__bet_value = self.initial_bet_value
-                self.current_round = 0
+
+        expected_last_result = True if self.inverted else False
+        previous_bet_result = self._Strategies__sample_result[self._Strategies__bet_result_index - 1]
+        if previous_bet_result == expected_last_result and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+            self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
+            self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+            self.current_round += 1
         else:
-            if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
-                    and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
-                self._Strategies__bet_value = self.multiplication_factor*self._Strategies__bet_value
-                self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
-                self.current_round += 1
-            else:
-                self._Strategies__bet_value = self.initial_bet_value
-                self.current_round = 0
+            self._Strategies__bet_value = self.initial_bet_value
+            self.current_round = 0
 
 
 class FixedSoros(Strategies):
@@ -331,8 +314,8 @@ class FixedSoros(Strategies):
         self.initial_bet_value = self._Strategies__bet_value
 
     def bet_value_calculator_non_fixed(self):
-        if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
-                and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+        previous_bet_result = self._Strategies__sample_result[self._Strategies__bet_result_index - 1]
+        if previous_bet_result == True and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
             self._Strategies__bet_value += self._Strategies__bet_value*self.user_input['payout_rate']
             self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
             self.current_round += 1
@@ -371,8 +354,8 @@ class PercentageSoros(Strategies):
         self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage
         self.initial_bet_value = self.max_min_verify(self.initial_bet_value)
 
-        if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
-                and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+        previous_bet_result = self._Strategies__sample_result[self._Strategies__bet_result_index - 1]
+        if previous_bet_result == True and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
             self._Strategies__bet_value += self._Strategies__bet_value*self.user_input['payout_rate']
             self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
             self.current_round += 1
