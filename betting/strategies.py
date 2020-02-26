@@ -1,18 +1,19 @@
 from typing import Union, List
 from abc import ABC, abstractmethod
 from random import uniform
-import math
 
 from betting.PlotGraph import PlotGraph
 from betting.Stats import Stats
 from betting.statistical_calculations import *
+from betting.utils import *
 
 """
 Strategies TODO: dAlembert, fibonacci,
-oscars_grind, patrick, sorogales, whittaker
+oscars_grind, patrick, whittaker
 """
 strategies_list = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion',
-                   'fixed_martingale', 'percentage_martingale']
+                   'fixed_martingale', 'percentage_martingale', 'fixed_soros',
+                   'percentage_soros']
 
 
 class Strategies(ABC):
@@ -318,7 +319,7 @@ class FixedSoros(Strategies):
             rounds: int = 5):
         super().__init__(bet_results, user_input, title)
         self.bet_value = bet_value
-        self.rounds = rounds
+        self.round_limit = rounds
     
     def strategy_setup(self):
         if self.rounds <= 1: self.rounds = 2
@@ -331,7 +332,7 @@ class FixedSoros(Strategies):
 
     def bet_value_calculator_non_fixed(self):
         if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
-                and self._Strategies__bet_result_index > 0 and self.current_round < self.rounds:
+                and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
             self._Strategies__bet_value += self._Strategies__bet_value*self.user_input['payout_rate']
             self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
             self.current_round += 1
@@ -351,7 +352,7 @@ class PercentageSoros(Strategies):
             use_kelly_percentage: bool = False):
         super().__init__(bet_results, user_input, title)
         self.bet_percentage = bet_percentage
-        self.rounds = rounds
+        self.round_limit = rounds
         self.use_kelly_percentage = use_kelly_percentage
 
     def strategy_setup(self):
@@ -371,7 +372,7 @@ class PercentageSoros(Strategies):
         self.initial_bet_value = self.max_min_verify(self.initial_bet_value)
 
         if self._Strategies__sample_result[self._Strategies__bet_result_index - 1] == True \
-                and self._Strategies__bet_result_index > 0 and self.current_round < self.rounds:
+                and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
             self._Strategies__bet_value += self._Strategies__bet_value*self.user_input['payout_rate']
             self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
             self.current_round += 1
@@ -380,3 +381,36 @@ class PercentageSoros(Strategies):
             self.current_round = 0
 
 
+class FixedFibonacci(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Fixed Fibonacci',
+            bet_value: Union[int, float, None] = None,
+            round_limit: int = 5,
+            inverted: bool = False):
+        super().__init__(bet_results, user_input, title)
+        self.bet_value = bet_value
+        self.round_limit = round_limit
+        self.inverted = inverted
+
+    def strategy_setup(self):
+        if self.inverted and self.title == 'Fixed Fibonacci': self.title = 'Fixed Anti-Fibonacci'
+        self.current_round = 0
+    
+    def bet_value_calculator_fixed(self):
+        if self.bet_value is None: self._Strategies__bet_value = self.user_input['bet_value']
+        self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+        self.initial_bet_value = self._Strategies__bet_value
+
+    def bet_value_calculator_non_fixed(self):
+        expected_last_result = True if self.inverted else False
+        previous_bet_result = self._Strategies__sample_result[self._Strategies__bet_result_index - 1]
+        if previous_bet_result == expected_last_result and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+            self._Strategies__bet_value = nth_fibonacci_number(self.current_round + 1)*self._Strategies__bet_value
+            self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+            self.current_round += 1
+        else:
+            self._Strategies__bet_value = self.initial_bet_value
+            self.current_round = 0

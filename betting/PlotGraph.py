@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import matplotlib.style as style
 from typing import Union, List
+
+from betting.utils import *
 style.use('bmh')
 
 
@@ -29,41 +31,12 @@ class PlotGraph:
         plt.axhline(0, color='r', linewidth=1.2)
 
     def __config_bankroll_average(self, bankroll_histories):
-        bankroll_history_average = self.__get_bankroll_history_average(
-            bankroll_histories)
-        bet_count_history = self.__get_bet_count_history(
-            bankroll_history_average)
+        bankroll_history_average = get_bankroll_history_average(user_input['samples'], bankroll_histories)
+        bet_count_history = get_bet_count_history(bankroll_history_average)
         plt.plot(bet_count_history, bankroll_history_average,
                  linewidth=2.5, color='k', label='Bankroll Average')
         leg = plt.legend(loc='upper left')
         [line.set_linewidth(4.0) for line in leg.get_lines()]
-
-    #FIXME: Move to another class
-    def __get_bankroll_history_average(self, bankroll_histories):
-        bankroll_history_sum = []
-        bankroll_history_average = []
-        for i, bankroll_history in enumerate(bankroll_histories):
-            for j, bankroll in enumerate(bankroll_history):
-                if i == 0:
-                    bankroll_history_sum.append(bankroll)
-                else:
-                    try:
-                        bankroll_history_sum[j] += bankroll
-                    except IndexError:
-                        bankroll_history_sum.append(bankroll)
-
-        for bankroll in bankroll_history_sum:
-            bankroll_history_average.append(
-                bankroll/self.user_input['samples'])
-        return bankroll_history_average
-
-    def __get_bet_count_history(self, bankroll_history_average):
-        try:
-            bet_count_history = list(
-                zip(*enumerate(bankroll_history_average, 1)))[0]
-        except IndexError:
-            return list()
-        return bet_count_history
 
     @staticmethod
     def show() -> None:
