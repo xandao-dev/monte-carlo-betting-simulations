@@ -6,7 +6,7 @@ https://github.com/xandao6/monte-carlo-betting-simulations
 from betting.BetGenerator import BetGenerator
 from betting.Strategies import FixedBettor, PercentageBettor, KellyCriterion, FixedMartingale
 from betting.Strategies import PercentageMartingale, FixedSoros, PercentageSoros, FixedFibonacci
-from betting.Strategies import PercentageFibonacci, FixedDAlembert, PercentageDAlembert
+from betting.Strategies import PercentageFibonacci, FixedDAlembert
 from betting.PlotGraph import PlotGraph
 from betting.Stats import Stats
 

@@ -52,7 +52,7 @@ class Strategies(ABC):
                 self.bet_value_calculator_non_fixed()
                 self.__bet(bet_result)
 
-                print(f'{self.title}: result-> {bet_result}, bet_value: {self.__bet_value}')
+                #print(f'{self.title}: result-> {bet_result}, bet_value: {self.__bet_value}')
 
                 broke = self.__broke_verify(broke)
                 stoploss_reached = self.__stoploss_verify(stoploss_reached)
