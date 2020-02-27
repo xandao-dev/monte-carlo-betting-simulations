@@ -12,8 +12,8 @@ from betting.Stats import Stats
 
 
 user_input = {
-    'samples': 1000,
-    'bet_count': 5000,
+    'samples': 5,
+    'bet_count': 100,
     'win_rate': 0.5500,  # range: 0.0000-1.0000
     'lose_rate': 0.4500,  # range: 1.0000-0.0000
     'payout_rate': 0.8700,  # range: 0.0000-2.0000 generally, but you choose
@@ -47,8 +47,6 @@ def main():
     FixedSoros(*data).simulate_strategy()
     PercentageSoros(*data).simulate_strategy()
     PercentageSoros(*data, use_kelly_percentage=True).simulate_strategy()
-    PercentageSoros(*data, inverted=True).simulate_strategy()
-    PercentageSoros(*data, inverted=True, use_kelly_percentage=True).simulate_strategy()
     FixedFibonacci(*data).simulate_strategy()
     FixedFibonacci(*data, inverted=True).simulate_strategy()
     PercentageFibonacci(*data).simulate_strategy()
