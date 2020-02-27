@@ -10,6 +10,12 @@ from betting.Strategies import PercentageFibonacci, FixedDAlembert, PercentageDA
 from betting.PlotGraph import PlotGraph
 from betting.Stats import Stats
 
+from betting.BetGenerator import BetGenerator
+from betting.Strategies import FixedBettor, PercentageBettor, KellyCriterion, FixedMartingale
+from betting.Strategies import PercentageMartingale
+from betting.PlotGraph import PlotGraph
+from betting.Stats import Stats
+
 
 user_input = {
     'samples': 1000,
