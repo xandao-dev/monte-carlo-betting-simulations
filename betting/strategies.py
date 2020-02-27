@@ -52,6 +52,8 @@ class Strategies(ABC):
                 self.bet_value_calculator_non_fixed()
                 self.__bet(bet_result)
 
+                print(f'{self.title}: result-> {bet_result}, bet_value: {self.__bet_value}')
+
                 broke = self.__broke_verify(broke)
                 stoploss_reached = self.__stoploss_verify(stoploss_reached)
                 stopgain_reached = self.__stopgain_verify(stopgain_reached)
@@ -470,7 +472,7 @@ class FixedDAlembert(Strategies):
             user_input: dict,
             title: str = 'Fixed DAlembert',
             bet_value: Union[int, float, None] = None,
-            round_limit: int = 5,
+            round_limit: int = 3,
             inverted: bool = False):
         super().__init__(bet_results, user_input, title)
         self.bet_value = bet_value
@@ -494,60 +496,9 @@ class FixedDAlembert(Strategies):
             self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
             self.current_round += 1
         else:
-            self._Strategies__bet_value = self.initial_bet_value
-            self.current_round = 0
-
-
-class PercentageDAlembert(Strategies):
-    def __init__(
-            self,
-            bet_results: List[List[bool]],
-            user_input: dict,
-            title: str = 'Percentage DAlembert',
-            bet_percentage: Union[int, float, None] = None,
-            round_limit: int = 5,
-            inverted: bool = False,
-            use_kelly_percentage: bool = False,
-            kelly_fraction: Union[int, float, None] = 1):
-        super().__init__(bet_results, user_input, title)
-        self.bet_percentage = bet_percentage
-        self.round_limit = round_limit
-        self.inverted = inverted
-        self.use_kelly_percentage = use_kelly_percentage
-        self.kelly_fraction = kelly_fraction
-
-    def strategy_setup(self):
-        if self.inverted and self.use_kelly_percentage and self.title == 'Percentage DAlembert':
-            self.title = 'Percentage Kelly Anti-DAlembert'
-        elif self.inverted and not self.use_kelly_percentage and self.title == 'Percentage DAlembert':
-            self.title = 'Percentage Anti-DAlembert'
-        elif not self.inverted and self.use_kelly_percentage and self.title == 'Percentage DAlembert':
-            self.title = 'Percentage Kelly DAlembert'
-            
-        self.current_round = 0
-
-        if self.bet_percentage is None: self.bet_percentage = self.user_input['bet_percentage']
-        if self.use_kelly_percentage:
-            self.bet_percentage = self.user_input['win_rate'] - ((1-self.user_input['win_rate']) / (self.user_input['payout_rate']/1))
-            if self.bet_percentage <= 0:
-                print(f'\n*{self.title.upper()}*')
-                print('Negative Expectation. DO NOT operate!')
-                return [[], [], self.title]
-
-    def bet_value_calculator_non_fixed(self):
-        if self.use_kelly_percentage:
-            self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage*self.kelly_fraction
-        else: 
-            self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage
-        self.initial_bet_value = self.max_min_verify(self.initial_bet_value)
-
-        expected_last_result = True if self.inverted else False
-        previous_bet_result = self._Strategies__sample_result[self._Strategies__bet_result_index - 1]
-        if previous_bet_result == expected_last_result and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
-            self._Strategies__bet_value += self.initial_bet_value
-            self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
-            self.current_round += 1
-        else:
-            self._Strategies__bet_value = self.initial_bet_value
-            self.current_round = 0
-
+            if self._Strategies__bet_value <= self.initial_bet_value:
+                self._Strategies__bet_value = self.initial_bet_value
+                self.current_round = 0
+            else:
+                self._Strategies__bet_value -= self.initial_bet_value
+                self.current_round -= 1
