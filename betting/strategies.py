@@ -1,18 +1,18 @@
 from typing import Union, List
 from abc import ABC, abstractmethod
 from random import uniform
+import math
 
 from betting.PlotGraph import PlotGraph
 from betting.Stats import Stats
 from betting.statistical_calculations import *
 from betting.utils import *
 
-"""
-Strategies TODO: dAlembert, oscars_grind, patrick, whittaker, tribonacci
-"""
+
 strategies_list = ['fixed_bettor', 'percentage_bettor', 'kelly_criterion',
                    'fixed_martingale', 'percentage_martingale', 'fixed_soros',
-                   'percentage_soros', 'fixed_fibonacci', 'percentage_fibonacci']
+                   'percentage_soros', 'fixed_fibonacci', 'percentage_fibonacci',
+                   'fixed_DAlembert']
 
 
 class Strategies(ABC):
@@ -212,7 +212,7 @@ class FixedMartingale(Strategies):
             title: str = 'Fixed Martingale',
             bet_value: Union[int, float, None] = None,
             multiplication_factor: Union[int, float] = 2,
-            round_limit: int = 5,
+            round_limit: int = math.inf,
             inverted: bool = False):
         super().__init__(bet_results, user_input, title)
         self.bet_value = bet_value
@@ -249,7 +249,7 @@ class PercentageMartingale(Strategies):
             title: str = 'Percentage Martingale',
             bet_percentage: Union[int, float, None] = None,
             multiplication_factor: Union[int, float] = 2,
-            round_limit: int = 5,
+            round_limit: int = math.inf,
             inverted: bool = False,
             use_kelly_percentage: bool = False,
             kelly_fraction: Union[int, float, None] = 1):
@@ -383,7 +383,7 @@ class FixedFibonacci(Strategies):
             user_input: dict,
             title: str = 'Fixed Fibonacci',
             bet_value: Union[int, float, None] = None,
-            round_limit: int = 5,
+            round_limit: int = math.inf,
             inverted: bool = False):
         super().__init__(bet_results, user_input, title)
         self.bet_value = bet_value
@@ -418,7 +418,7 @@ class PercentageFibonacci(Strategies):
             user_input: dict,
             title: str = 'Percentage Fibonacci',
             bet_percentage: Union[int, float, None] = None,
-            round_limit: int = 5,
+            round_limit: int = math.inf,
             inverted: bool = False,
             use_kelly_percentage: bool = False,
             kelly_fraction: Union[int, float, None] = 1):
@@ -466,13 +466,14 @@ class PercentageFibonacci(Strategies):
 
 
 class FixedDAlembert(Strategies):
+    # The Anti-DAlembert is very similar to the Oscar's Grind System
     def __init__(
             self,
             bet_results: List[List[bool]],
             user_input: dict,
             title: str = 'Fixed DAlembert',
             bet_value: Union[int, float, None] = None,
-            round_limit: int = 3,
+            round_limit: int = math.inf,
             inverted: bool = False):
         super().__init__(bet_results, user_input, title)
         self.bet_value = bet_value
@@ -502,3 +503,70 @@ class FixedDAlembert(Strategies):
             else:
                 self._Strategies__bet_value -= self.initial_bet_value
                 self.current_round -= 1
+    
+
+
+"""
+Other Crap Systems: Whittaker's System, Tribonacci, Patrick's System, Square Sequence, 
+                    Triangle Sequence, Oscar's Grind, The Parlay (Paroli), Ascot
+"""
+
+"""
+Not Working
+class PercentageDAlembert(Strategies):
+    def __init__(
+            self,
+            bet_results: List[List[bool]],
+            user_input: dict,
+            title: str = 'Percentage DAlembert',
+            bet_percentage: Union[int, float, None] = None,
+            round_limit: int = 5,
+            inverted: bool = False,
+            use_kelly_percentage: bool = False,
+            kelly_fraction: Union[int, float, None] = 1):
+        super().__init__(bet_results, user_input, title)
+        self.bet_percentage = bet_percentage
+        self.round_limit = round_limit
+        self.inverted = inverted
+        self.use_kelly_percentage = use_kelly_percentage
+        self.kelly_fraction = kelly_fraction
+
+    def strategy_setup(self):
+        if self.inverted and self.use_kelly_percentage and self.title == 'Percentage DAlembert':
+            self.title = 'Percentage Kelly Anti-DAlembert'
+        elif self.inverted and not self.use_kelly_percentage and self.title == 'Percentage DAlembert':
+            self.title = 'Percentage Anti-DAlembert'
+        elif not self.inverted and self.use_kelly_percentage and self.title == 'Percentage DAlembert':
+            self.title = 'Percentage Kelly DAlembert'
+            
+        self.current_round = 0
+
+        if self.bet_percentage is None: self.bet_percentage = self.user_input['bet_percentage']
+        if self.use_kelly_percentage:
+            self.bet_percentage = self.user_input['win_rate'] - ((1-self.user_input['win_rate']) / (self.user_input['payout_rate']/1))
+            if self.bet_percentage <= 0:
+                print(f'\n*{self.title.upper()}*')
+                print('Negative Expectation. DO NOT operate!')
+                return [[], [], self.title]
+
+    def bet_value_calculator_non_fixed(self):
+        if self.use_kelly_percentage:
+            self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage*self.kelly_fraction
+        else: 
+            self.initial_bet_value = self._Strategies__current_bankroll*self.bet_percentage
+        self.initial_bet_value = self.max_min_verify(self.initial_bet_value)
+
+        expected_last_result = True if self.inverted else False
+        previous_bet_result = self._Strategies__sample_result[self._Strategies__bet_result_index - 1]
+        if previous_bet_result == expected_last_result and self._Strategies__bet_result_index > 0 and self.current_round < self.round_limit:
+            self._Strategies__bet_value += self.initial_bet_value
+            self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
+            self.current_round += 1
+        else:
+            if self._Strategies__bet_value <= self.initial_bet_value:
+                self._Strategies__bet_value = self.initial_bet_value
+                self.current_round = 0
+            else:
+                self._Strategies__bet_value -= self.initial_bet_value
+                self.current_round -= 1
+"""

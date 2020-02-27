@@ -8,13 +8,13 @@
 8 - Finish the tutorial printer (ui.py)
 9 - Write a nice README
 10 - Update and add methods and functions description
-11 - 
+11 - Add logger, to verify the strategies (or tests)
 12 - 
 13 - Empty Plot in KellyCriterion when expectate is negative.
 14 - Print KellyCriterion percentage
 15 - 
 16 - Plot all graphs together too
 17 - Add just a property field, without a setter in strategies template
-18 - Create new strategies
+18 - 
 19 - Save results in a csv or txt file (ui.py and exportData.py[NEW File])
 20 - Save results in memory or read from file and return the best strategy (?)
