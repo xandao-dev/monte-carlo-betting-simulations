@@ -36,7 +36,7 @@ class Strategies(ABC):
         loses: List[Union[int, float]] = []
         bet_count_histories: List[List[int]] = []
         bankroll_histories: List[List[Union[int, float]]] = []
-        bet_value_histories: List[List[Union[int, float]]] = []
+        self.bet_value_histories: List[List[Union[int, float]]] = []
         broke: bool = False
         stoploss_reached: bool = False
         stopgain_reached: bool = False
@@ -50,10 +50,9 @@ class Strategies(ABC):
             self.__current_bankroll = self.user_input['initial_bankroll']
             for self.__bet_result_index, bet_result in enumerate(self.__sample_result):
                 self.bet_value_calculator_non_fixed()
+                self.__bet_value = round(self.__bet_value, 2)
                 self.__bet(bet_result)
-
-                #print(f'{self.title}: result-> {bet_result}, bet_value: {self.__bet_value}')
-
+                
                 broke = self.__broke_verify(broke)
                 stoploss_reached = self.__stoploss_verify(stoploss_reached)
                 stopgain_reached = self.__stopgain_verify(stopgain_reached)
@@ -75,12 +74,12 @@ class Strategies(ABC):
             if stopgain_reached: sg_reached_count += 1
 
             bankroll_histories.append(bankroll_history.copy())
-            bet_value_histories.append(bet_value_history.copy())
+            self.bet_value_histories.append(bet_value_history.copy())
 
         bet_count_histories = self.__get_bet_count_histories(bankroll_histories)
 
         stats: Stats = Stats(self.bet_results, self.user_input, bankroll_histories,
-                             bet_value_histories, sl_reached_count, sg_reached_count,
+                             self.bet_value_histories, sl_reached_count, sg_reached_count,
                              broke_count, profitors_count, profits, loses, self.title)
 
         stats.print_strategy_stats()
