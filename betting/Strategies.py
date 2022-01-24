@@ -46,8 +46,10 @@ class Strategies(ABC):
 
         for self.__sample_result in self.bet_results:
             bankroll_history = [self.user_input['initial_bankroll']]
+            self.__bet_value = self.user_input['bet_value']
             bet_value_history = []
             self.__current_bankroll = self.user_input['initial_bankroll']
+            self.sample_setup()
             for self.__bet_result_index, bet_result in enumerate(self.__sample_result):
                 self.bet_value_calculator_non_fixed()
                 self.__bet_value = round(self.__bet_value, 2)
@@ -136,6 +138,12 @@ class Strategies(ABC):
     def bet_value_calculator_fixed(self):
         """
         Calculate the fixed amount of bet.
+        """
+        pass
+
+    def sample_setup(self):
+        """
+        Configuration for each sample.
         """
         pass
 
@@ -392,7 +400,7 @@ class FixedFibonacci(Strategies):
     def strategy_setup(self):
         if self.inverted and self.title == 'Fixed Fibonacci': self.title = 'Fixed Anti-Fibonacci'
         self.current_round = 0
-    
+
     def bet_value_calculator_fixed(self):
         if self.bet_value is None: self._Strategies__bet_value = self.user_input['bet_value']
         self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
@@ -481,12 +489,14 @@ class FixedDAlembert(Strategies):
 
     def strategy_setup(self):
         if self.inverted and self.title == 'Fixed DAlembert': self.title = 'Fixed Anti-DAlembert'
-        self.current_round = 0
     
     def bet_value_calculator_fixed(self):
         if self.bet_value is None: self._Strategies__bet_value = self.user_input['bet_value']
         self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
         self.initial_bet_value = self._Strategies__bet_value
+
+    def sample_setup(self):
+        self.current_round = 0
 
     def bet_value_calculator_non_fixed(self):
         expected_last_result = True if self.inverted else False
@@ -496,12 +506,12 @@ class FixedDAlembert(Strategies):
             self._Strategies__bet_value = self.max_min_verify(self._Strategies__bet_value)
             self.current_round += 1
         else:
-            if self._Strategies__bet_value <= self.initial_bet_value:
-                self._Strategies__bet_value = self.initial_bet_value
-                self.current_round = 0
-            else:
+            if self._Strategies__bet_value > self.initial_bet_value:
                 self._Strategies__bet_value -= self.initial_bet_value
                 self.current_round -= 1
+            else:
+                self._Strategies__bet_value = self.initial_bet_value
+                self.current_round = 0
     
 
 
