@@ -31,7 +31,6 @@ bet_results = [
     [True, True, True, False, False, False]
 ]
 
-'''
 class TestFixedBettor(unittest.TestCase):
     def test_bet_value_histories(self):
         """
@@ -332,7 +331,7 @@ class TestPercentageFibonacci(unittest.TestCase):
         #[print(bv) for bv in pf.bet_value_histories]
         self.assertEqual(pf.bet_value_histories, expected_bet_value_histories)
 
-'''
+
 class TestFixedDAlembert(unittest.TestCase):
     def test_bet_value_histories(self):
         """
