@@ -1,6 +1,6 @@
 '''
 Author: Alexandre Calil Martins Fonseca
-https://github.com/xandao6/monte-carlo-betting-simulations
+https://github.com/xandao-dev/monte-carlo-betting-simulations
 '''
 
 from betting.BetGenerator import BetGenerator
