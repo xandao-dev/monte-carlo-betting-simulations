@@ -6,11 +6,11 @@
     A collection of Monte Carlo simulations for betting strategies like the Martingale, D'Alembert, and much more, see [here](#features) for a full list. The project generates a series of plots for each strategy, and also generates a summary table of the results.
     <br />
     <br />
-    <a href="https://github.com/xandao6/monte-carlo-betting-simulations"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/xandao-dev/monte-carlo-betting-simulations"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://github.com/xandao6/monte-carlo-betting-simulations/issue">Report Bug</a>
+    <a href="https://github.com/xandao-dev/monte-carlo-betting-simulations/issue">Report Bug</a>
     ·
-    <a href="https://github.com/xandao6/monte-carlo-betting-simulations/issues">Request Feature</a>
+    <a href="https://github.com/xandao-dev/monte-carlo-betting-simulations/issues">Request Feature</a>
   </p>
 </p>
 
@@ -41,7 +41,7 @@
   <br>
   It was run 20 simulations of 10000 bets each, for each strategy and the initial bankroll was 100$.
 <div align="center">
-  <a href="https://github.com/xandao6/monte-carlo-betting-simulations">
+  <a href="https://github.com/xandao-dev/monte-carlo-betting-simulations">
     <img src="assets/user-inputs-european-roulette.png" alt="User Inputs for European Roulette">
     <img src="assets/fixed-bettor.png" alt="Fixed Bettor Strategy Plot">
     <img src="assets/fixed-bettor-result.png" alt="Fixed Bettor Strategy Result">
@@ -113,7 +113,7 @@
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/xandao6/monte-carlo-betting-simulations/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/xandao-dev/monte-carlo-betting-simulations/issues) for a list of proposed features (and known issues).
 
 
 
@@ -139,6 +139,6 @@ Free software =)
 <!-- CONTACT -->
 ## Contact
 
-Alexandre Calil - [@xandao6](https://www.linkedin.com/in/xandao6/) - alexandrecalilmf@gmail.com
+Alexandre Calil - [Linkedin](https://www.linkedin.com/in/xandao-dev/) - [alexandre@xandao.dev](mailto:alexandre@xandao.dev)
 
-Project Link: [https://github.com/xandao6/monte-carlo-betting-simulations](https://github.com/xandao6/monte-carlo-betting-simulations)
+Project Link: [https://github.com/xandao-dev/monte-carlo-betting-simulations](https://github.com/xandao-dev/monte-carlo-betting-simulations)
