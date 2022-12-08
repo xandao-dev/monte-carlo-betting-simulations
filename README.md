@@ -3,7 +3,7 @@
   <h3 align="center">Monte Carlo Betting Simulations </h3>
 
   <p align="center">
-    A collection of Monte Carlo simulations for betting strategies like the Martingale, D'Alembert, and much more, see [here](#features) for a full list. The project generates a series of plots for each strategy, and also generates a summary table of the results.
+    A collection of Monte Carlo simulations for betting strategies like the Martingale, D'Alembert, and much more. The project generates a series of plots for each strategy, and also generates a summary table of the results.
     <br />
     <br />
     <a href="https://github.com/xandao-dev/monte-carlo-betting-simulations"><strong>Explore the docs »</strong></a>
